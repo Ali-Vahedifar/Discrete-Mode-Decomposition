@@ -1,0 +1,98 @@
+# DMD+SMV Default Configuration
+# ==============================
+# 
+# Author: Ali Vahedi (Mohammad Ali Vahedifar)
+# Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
+# Email: av@ece.au.dk
+# 
+# IEEE INFOCOM 2025: "Discrete Mode Decomposition Meets Shapley Value:
+# Robust Signal Prediction in Tactile Internet"
+#
+# These settings match the paper's experimental configuration.
+
+# Training parameters (Section VI-B of paper)
+training:
+  epochs: 200
+  batch_size: 64
+  learning_rate: 0.001
+  lr_decay_epochs: [80, 120, 170]
+  lr_decay_factor: 0.005
+  gradient_clip: 1.0
+  early_stopping_patience: 20
+
+# Adam optimizer settings (from paper)
+optimizer:
+  name: adam
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 0.0
+
+# Model architectures
+models:
+  transformer:
+    hidden_dim: 128
+    num_layers: 4
+    num_heads: 4
+    dropout: 0.1  # Paper: P-drop = 0.1 for Transformer
+  
+  resnet:
+    hidden_dim: 128
+    num_layers: 32  # ResNet-32
+    dropout: 0.1  # Paper: P-drop = 0.1 for ResNet
+  
+  lstm:
+    hidden_dim: 128
+    num_layers: 2  # Paper: two stacked LSTM layers
+    dropout: 0.2  # Paper: P-drop = 0.2 for LSTM (higher tendency to overfit)
+
+# DMD parameters (Section IV)
+dmd:
+  noise_variance: 0.01  # alpha in paper
+  epsilon1: 1.0e-6
+  epsilon2: 1.0e-6
+  tau1: 0.1
+  tau2: 0.1
+  kappa1: 1.0e-3  # Inner convergence threshold
+  kappa2: 1.0e-3  # Outer convergence threshold
+  max_modes: 10
+  max_inner_iterations: 500
+
+# SMV parameters (Section V)
+smv:
+  tolerance: 0.01  # 1% tolerance for convergence
+  max_iterations: 1000
+  epsilon3: 0.01  # Performance tolerance
+
+# Data parameters
+data:
+  sampling_rate: 1000  # 1 kHz as per TI requirements
+  features: [pos_x, pos_y, pos_z, vel_x, vel_y, vel_z, force_x, force_y, force_z]
+  normalize: true
+  # Paper: "training using 70% of the data and testing using 20%, 
+  # and 10% of the data reserved as a validation set"
+  train_split: 0.7
+  val_split: 0.1
+  test_split: 0.2
+
+# Evaluation parameters (Section VI)
+evaluation:
+  window_sizes: [1, 5, 10, 25, 50, 100]  # W in paper
+  prediction_horizon: 100  # Predict next 100 samples
+  mode_update_interval: 100  # Update modes every 100 samples
+  num_runs: 10  # Paper: "averaged over 10 independent runs"
+
+# Hardware
+hardware:
+  device: auto  # auto, cuda, or cpu
+  num_workers: 4
+  pin_memory: true
+
+# Paths
+paths:
+  data_dir: ./data
+  checkpoint_dir: ./checkpoints
+  results_dir: ./results
+  log_dir: ./logs
+
+# Reproducibility
+seed: 42
