@@ -1,9 +1,9 @@
-%% Discrete Mode Decomposition (DMD) - Exact Implementation
+%% Discrete Mode Decomposition (DMD)
 %  ==========================================================
 %  
-%  EXACT implementation of DMD algorithm as described in:
+%
 %  "Discrete Mode Decomposition Meets Shapley Value: Robust Signal 
-%  Prediction in Tactile Internet" - IEEE INFOCOM 2025
+%  Prediction in Tactile Internet" - IEEE INFOCOM 2026
 %
 %  Author: Ali Vahedi (Mohammad Ali Vahedifar)
 %  Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
