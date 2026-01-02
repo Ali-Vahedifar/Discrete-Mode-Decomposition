@@ -2,9 +2,9 @@
 %  =====================================================
 %  
 %  Implementation of the Shapley Mode Value algorithm as described in
-%  Section V and Algorithm 2 of the IEEE INFOCOM 2025 paper.
+%  Section V and Algorithm 2 of the IEEE INFOCOM 2026 paper.
 %
-%  Author: Ali Vahedi (Mohammad Ali Vahedifar)
+%  Author: Ali Vahedi
 %  Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 %  Email: av@ece.au.dk
 %
