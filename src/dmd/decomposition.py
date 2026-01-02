@@ -1,11 +1,6 @@
 """
-Discrete Mode Decomposition (DMD) Algorithm - EXACT Paper Implementation
+Discrete Mode Decomposition (DMD) Algorithm 
 =========================================================================
-
-EXACT implementation of the DMD algorithm as described in:
-"Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction
-in Tactile Internet" - IEEE INFOCOM 2025
-
 Author: Ali Vahedi (Mohammad Ali Vahedifar)
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
