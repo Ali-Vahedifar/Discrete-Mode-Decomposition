@@ -5,7 +5,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![IEEE INFOCOM 2025](https://img.shields.io/badge/IEEE-INFOCOM%202025-green.svg)](https://infocom2025.ieee-infocom.org/)
 
-## 🏆 Accepted at IEEE INFOCOM 2025
+## 🏆 Accepted at IEEE INFOCOM 2026
 
 **Authors:** Ali Vahedi and Qi Zhang
 
@@ -16,9 +16,10 @@
 
 ---## 🔗 Links
 
-- **Paper:** IEEE INFOCOM 2025 Proceedings
+- **Paper:** IEEE INFOCOM 2026 Proceedings
 - **Code:** [github.com/Ali-Vahedifar/Discrete-Mode-Decomposition](https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git)
 - **Dataset:** [Kinaesthetic Interactions Dataset (Zenodo)](https://doi.org/10.5281/zenodo.14924062)
+- **Please check the MATLAB Version branch for MATLAB implementation**.
 
 ## 📖 Abstract
 
