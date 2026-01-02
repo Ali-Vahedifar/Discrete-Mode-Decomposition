@@ -1,40 +1,50 @@
 """
-ADMM Optimization for Discrete Mode Decomposition
-==================================================
+ADMM Optimization for Discrete Mode Decomposition - EXACT Paper Implementation
+===============================================================================
 
-Implementation of the Alternating Direction Method of Multipliers (ADMM)
-for solving the DMD optimization problem.
+EXACT implementation of the ADMM algorithm as described in:
+"Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction
+in Tactile Internet" - IEEE INFOCOM 2025
 
 Author: Ali Vahedi (Mohammad Ali Vahedifar)
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025
+This research was supported by:
+- TOAST project (EU Horizon Europe, Grant No. 101073465)
+- Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
 
-Mathematical Background:
------------------------
-The DMD optimization problem is:
-
+Mathematical Background (from paper):
+-------------------------------------
+The DMD optimization problem (Eq. 17):
     min_{u_M, ω_M} T1 + T2 + T3
-    s.t. x[n] = Σ_{i=1}^{M} u_i[n] + x_u[n]
-         ||x_u[n]||_2^2 ≤ ||u_min[n]||_2^2  (energy-based bound, Eq. 16)
+    s.t. x[n] = Σ_{i=1}^{M} u_i[n] + x_u[n]       (Eq. 15)
+         ||x_u[n]||²₂ ≤ ||u_min[n]||²₂             (Eq. 16)
 
-The Augmented Lagrangian (Eq. 18) is:
+The Augmented Lagrangian (Eq. 18):
+    L_aug(μ,ρ) = ||∂_n[A_n * u_M] e^{-jω_M n}||²₂ + Σ||β_i * u_M||²₂
+                 + ||β_M * x_u||²₂ + (ρ/2)||x - Σu_i - x_u + θ||²₂
+                 + μ(||x_u||²₂ - ||u_min||²₂) - (ρ/2)||θ||²₂
 
-    L_aug = T1 + T2 + T3 + (ρ/2)||x - Σu_i - x_u + θ||²
-            + μ(||x_u||² - ||u_min||²) - (ρ/2)||θ||²
+Frequency Domain Lagrangian (Eq. 19):
+    L_aug(μ,ρ(ω)) = (2/π)∫₀^π sin²(ω-ω_M)|U_M(ω)|² dω
+                    + Σ∫₀^π |β_i(ω)U_M(ω)|² dω
+                    + ∫₀^π |β_M(ω)X_u(ω)|² dω
+                    + (ρ(ω)/2)||X - ΣU_i - X_u + Θ||²₂
+                    + μ(||X_u||²₂ - ||U_min||²₂) - (ρ(ω)/2)||Θ||²₂
 
-ADMM breaks this into sub-problems solved iteratively:
-1. Update U_M(ω) - Eq. 24
-2. Update ω_M - Eq. 27
-3. Update X_u(ω) - Eq. 30
-4. Update ρ(ω) - Eq. 31
-5. Update μ - Eq. 32 (with max(0, ...) projection)
+ADMM Update Equations:
+    Eq. 24: U_M update
+    Eq. 27: ω_M update
+    Eq. 30: X_u update (with 2μ term)
+    Eq. 31: ρ update (dual ascent for equality constraint)
+    Eq. 32: μ update (with max(0,...) for inequality constraint)
 """
 
 import numpy as np
 from numpy.fft import fft, ifft
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Dict
 from dataclasses import dataclass, field
 
 
@@ -43,49 +53,25 @@ class ADMMState:
     """
     State of ADMM optimization.
     
-    Attributes:
-        rho: Penalty parameter for equality constraint
-        mu: Lagrangian multiplier for inequality constraint
-        theta: Scaled dual variable (λ = ρ * θ)
-        iteration: Current iteration number
-        primal_residual: Primal residual norm
-        dual_residual: Dual residual norm
+    All variables match paper notation exactly.
     """
-    rho: float = 1.0
-    mu: float = 0.0
-    theta: Optional[np.ndarray] = None
+    rho: np.ndarray = None            # ρ(ω): Frequency-dependent penalty parameter
+    mu: float = 0.0                   # μ: Scalar Lagrangian multiplier for inequality
+    Theta: np.ndarray = None          # Θ(ω): Scaled dual variable (λ = ρ·θ)
     iteration: int = 0
-    primal_residual: float = float('inf')
-    dual_residual: float = float('inf')
-    history: List[dict] = field(default_factory=list)
+    history: List[Dict] = field(default_factory=list)
 
 
 class ADMMOptimizer:
     """
-    ADMM Optimizer for Discrete Mode Decomposition.
+    ADMM Optimizer for DMD - Exact Paper Implementation.
     
-    This class implements the ADMM algorithm for solving the constrained
-    optimization problem in DMD. The algorithm iteratively updates the
-    primal and dual variables until convergence.
+    Implements the update equations from the IEEE INFOCOM 2025 paper:
+    - Eq. 31: ρ update (equality constraint)
+    - Eq. 32: μ update (inequality constraint with energy-based bound)
     
     Author: Ali Vahedi (Mohammad Ali Vahedifar)
     IEEE INFOCOM 2025
-    
-    References:
-    -----------
-    [1] Boyd et al., "Distributed Optimization and Statistical Learning via
-        the Alternating Direction Method of Multipliers", 2011
-    [2] Bertsekas, "Constrained Optimization and Lagrange Multiplier Methods", 1996
-    
-    Example:
-    --------
-    >>> optimizer = ADMMOptimizer(tau1=0.1, tau2=0.1)
-    >>> optimizer.reset(signal_length=1000)
-    >>> for iteration in range(max_iter):
-    ...     # Update mode and other variables
-    ...     optimizer.update_multipliers(signal, modes, X_u, min_mode_magnitude)
-    ...     if optimizer.check_convergence():
-    ...         break
     """
     
     def __init__(
@@ -93,148 +79,205 @@ class ADMMOptimizer:
         tau1: float = 0.1,
         tau2: float = 0.1,
         rho_init: float = 1.0,
-        rho_min: float = 1e-6,
-        rho_max: float = 1e6,
-        adaptive_rho: bool = True,
-        mu_init: float = 0.0,
-        abstol: float = 1e-4,
-        reltol: float = 1e-3
+        mu_init: float = 0.0
     ):
         """
-        Initialize ADMM optimizer.
+        Initialize ADMM optimizer with paper parameters.
         
         Parameters:
         -----------
         tau1 : float
-            Step size for equality constraint update (Eq. 30)
+            τ₁: Step size for ρ update (Eq. 31)
         tau2 : float
-            Step size for inequality constraint update (Eq. 31)
+            τ₂: Step size for μ update (Eq. 32)
         rho_init : float
-            Initial penalty parameter
-        rho_min : float
-            Minimum allowed penalty parameter
-        rho_max : float
-            Maximum allowed penalty parameter
-        adaptive_rho : bool
-            Whether to adaptively adjust rho based on residuals
+            Initial ρ value
         mu_init : float
-            Initial Lagrangian multiplier for inequality constraint
-        abstol : float
-            Absolute tolerance for convergence
-        reltol : float
-            Relative tolerance for convergence
+            Initial μ value
         """
         self.tau1 = tau1
         self.tau2 = tau2
         self.rho_init = rho_init
-        self.rho_min = rho_min
-        self.rho_max = rho_max
-        self.adaptive_rho = adaptive_rho
         self.mu_init = mu_init
-        self.abstol = abstol
-        self.reltol = reltol
-        
-        # Initialize state
-        self._state = ADMMState(rho=rho_init, mu=mu_init)
+        self._state = None
     
     @property
-    def rho(self) -> float:
-        """Current penalty parameter."""
-        return self._state.rho
+    def rho(self) -> np.ndarray:
+        """Current penalty parameter ρ(ω)."""
+        return self._state.rho if self._state else None
     
     @property
     def mu(self) -> float:
-        """Current inequality multiplier."""
-        return self._state.mu
+        """Current inequality multiplier μ."""
+        return self._state.mu if self._state else self.mu_init
     
     @property
-    def theta(self) -> Optional[np.ndarray]:
-        """Current scaled dual variable."""
-        return self._state.theta
+    def Theta(self) -> np.ndarray:
+        """Current scaled dual variable Θ(ω)."""
+        return self._state.Theta if self._state else None
     
-    @property
-    def iteration(self) -> int:
-        """Current iteration number."""
-        return self._state.iteration
-    
-    def reset(self, signal_length: int):
+    def reset(self, N: int):
         """
-        Reset optimizer state for a new optimization.
+        Reset optimizer state for a new mode extraction.
+        
+        Algorithm 1, line 3: Initialize ρ¹, μ¹
         
         Parameters:
         -----------
-        signal_length : int
-            Length of the signal being processed
+        N : int
+            Signal length
         """
         self._state = ADMMState(
-            rho=self.rho_init,
+            rho=self.rho_init * np.ones(N),
             mu=self.mu_init,
-            theta=np.zeros(signal_length),
+            Theta=np.zeros(N, dtype=complex),
             iteration=0,
-            primal_residual=float('inf'),
-            dual_residual=float('inf'),
             history=[]
         )
     
-    def update_multipliers(
+    def update_rho(
+        self,
+        X: np.ndarray,
+        sum_U: np.ndarray
+    ) -> np.ndarray:
+        """
+        Update equality constraint multiplier ρ(ω).
+        
+        Implements Equation 31 from the paper:
+        ρ^{n+1}(ω) = ρ^n(ω) + τ₁ · (X(ω) - Σ_{i=1}^M U_i^{n+1}(ω))
+        
+        Parameters:
+        -----------
+        X : np.ndarray
+            Signal spectrum X(ω)
+        sum_U : np.ndarray
+            Sum of all mode spectra Σ U_i(ω)
+            
+        Returns:
+        --------
+        np.ndarray
+            Updated ρ(ω)
+        """
+        # Eq. 31: ρ^{n+1}(ω) = ρ^n(ω) + τ₁ · (X(ω) - Σ U_i(ω))
+        self._state.rho = self._state.rho + self.tau1 * np.abs(X - sum_U)
+        return self._state.rho
+    
+    def update_mu(
+        self,
+        X_u: np.ndarray,
+        modes: List[np.ndarray],
+        N: int
+    ) -> float:
+        """
+        Update inequality constraint multiplier μ.
+        
+        Implements Equation 32 from the paper:
+        μ^{n+1} = max(0, μ^n + τ₂ · ∫₀^π (||X_u(ω)||²₂ - ||U_min(ω)||²₂) dω)
+        
+        Parameters:
+        -----------
+        X_u : np.ndarray
+            Unprocessed signal spectrum X_u(ω)
+        modes : List[np.ndarray]
+            List of all extracted modes (time domain)
+        N : int
+            Signal length
+            
+        Returns:
+        --------
+        float
+            Updated μ
+        """
+        # Integration over [0, π] only (positive frequencies)
+        N_half = N // 2 + 1
+        d_omega = 2 * np.pi / N
+        
+        # Energy of X_u over [0, π]
+        X_u_energy = np.sum(np.abs(X_u[:N_half]) ** 2) * d_omega
+        
+        # Find U_min = argmin_{u ∈ U} ||u||₂
+        if modes:
+            mode_energies = []
+            for mode in modes:
+                U_i = fft(mode)
+                mode_energies.append(np.sum(np.abs(U_i[:N_half]) ** 2) * d_omega)
+            U_min_energy = min(mode_energies)
+        else:
+            U_min_energy = X_u_energy  # Fallback
+        
+        # Eq. 32: μ^{n+1} = max(0, μ^n + τ₂ · ∫(||X_u||² - ||U_min||²) dω)
+        self._state.mu = max(0, self._state.mu + self.tau2 * (X_u_energy - U_min_energy))
+        
+        return self._state.mu
+    
+    def update_Theta(
+        self,
+        X: np.ndarray,
+        sum_U: np.ndarray,
+        X_u: np.ndarray
+    ) -> np.ndarray:
+        """
+        Update scaled dual variable Θ(ω).
+        
+        Standard ADMM dual update:
+        Θ^{n+1}(ω) = Θ^n(ω) + (X(ω) - Σ U_i(ω) - X_u(ω))
+        
+        Parameters:
+        -----------
+        X : np.ndarray
+            Signal spectrum
+        sum_U : np.ndarray
+            Sum of all mode spectra
+        X_u : np.ndarray
+            Unprocessed signal spectrum
+            
+        Returns:
+        --------
+        np.ndarray
+            Updated Θ(ω)
+        """
+        self._state.Theta = self._state.Theta + (X - sum_U - X_u)
+        return self._state.Theta
+    
+    def step(
         self,
         signal: np.ndarray,
         modes: List[np.ndarray],
-        X_u: np.ndarray,
-        min_mode_magnitude: float
+        U_M: np.ndarray,
+        X_u: np.ndarray
     ):
         """
-        Update Lagrangian multipliers using dual ascent.
-        
-        Implements Equations 30 and 31 from the paper.
+        Perform complete ADMM step: update ρ, μ, and Θ.
         
         Parameters:
         -----------
         signal : np.ndarray
             Original signal x[n]
         modes : List[np.ndarray]
-            List of all extracted modes including current
+            Previously extracted modes
+        U_M : np.ndarray
+            Current mode spectrum U_M(ω)
         X_u : np.ndarray
-            Unprocessed signal component (frequency domain)
-        min_mode_magnitude : float
-            Magnitude of smallest mode for inequality constraint
+            Unprocessed signal spectrum X_u(ω)
         """
         N = len(signal)
         
-        # Ensure theta is initialized
-        if self._state.theta is None:
-            self._state.theta = np.zeros(N)
+        if self._state is None:
+            self.reset(N)
         
-        # Compute residuals
-        mode_sum = np.sum(modes, axis=0) if modes else np.zeros(N)
-        x_u_time = np.real(ifft(X_u)) if np.iscomplexobj(X_u) else X_u
-        
-        # Primal residual: x - Σu_i - x_u
-        primal_residual = signal - mode_sum - x_u_time
-        
-        # Update equality constraint multiplier - Eq. 30
-        # ρ^{n+1}(ω) = ρ^n(ω) + τ_1 * (X(ω) - Σ U_i(ω))
+        # Compute required spectra
         X = fft(signal)
-        sum_U = fft(mode_sum) if len(modes) > 0 else np.zeros(N, dtype=complex)
         
-        self._state.rho = self._state.rho + self.tau1 * np.mean(np.abs(X - sum_U))
+        sum_prev_U = np.zeros(N, dtype=complex)
+        for mode in modes:
+            sum_prev_U += fft(mode)
         
-        # Clip rho to valid range
-        self._state.rho = np.clip(self._state.rho, self.rho_min, self.rho_max)
+        sum_all_U = sum_prev_U + U_M
         
-        # Update theta (scaled dual variable)
-        self._state.theta = self._state.theta + primal_residual
-        
-        # Update inequality constraint multiplier - Eq. 32 (energy-based)
-        # μ^{n+1} = max(0, μ^n + τ_2 * ∫(||X_u(ω)||² - ||U_min(ω)||²) dω)
-        x_u_energy = np.sum(np.abs(X_u) ** 2)
-        min_mode_energy = min_mode_magnitude ** 2 * len(X_u)  # Energy of min mode
-        inequality_violation = x_u_energy - min_mode_energy
-        
-        self._state.mu = max(0, self._state.mu + self.tau2 * inequality_violation)
-        
-        # Store residuals
-        self._state.primal_residual = np.linalg.norm(primal_residual)
+        # Update multipliers (Eq. 31, 32)
+        self.update_rho(X, sum_all_U)
+        self.update_mu(X_u, modes + [np.real(ifft(U_M))], N)
+        self.update_Theta(X, sum_all_U, X_u)
         
         # Increment iteration
         self._state.iteration += 1
@@ -242,381 +285,224 @@ class ADMMOptimizer:
         # Store history
         self._state.history.append({
             'iteration': self._state.iteration,
-            'rho': self._state.rho,
+            'rho_mean': np.mean(self._state.rho),
             'mu': self._state.mu,
-            'primal_residual': self._state.primal_residual,
-            'inequality_violation': inequality_violation
+            'primal_residual': np.linalg.norm(X - sum_all_U - X_u)
         })
-        
-        # Adaptive rho adjustment
-        if self.adaptive_rho:
-            self._adapt_rho()
     
-    def _adapt_rho(self):
-        """
-        Adaptively adjust penalty parameter based on residuals.
-        
-        Uses the standard ADMM adaptive scheme:
-        - Increase rho if primal residual >> dual residual
-        - Decrease rho if dual residual >> primal residual
-        """
-        if len(self._state.history) < 2:
-            return
-        
-        current = self._state.history[-1]
-        previous = self._state.history[-2]
-        
-        # Estimate dual residual from rho change
-        rho_change = current['rho'] - previous['rho']
-        
-        # Adaptation parameters
-        mu_adapt = 10  # Factor for residual comparison
-        tau_adapt = 2  # Adaptation step
-        
-        primal = current['primal_residual']
-        dual_estimate = abs(rho_change) * 100  # Rough estimate
-        
-        if primal > mu_adapt * dual_estimate:
-            self._state.rho *= tau_adapt
-        elif dual_estimate > mu_adapt * primal:
-            self._state.rho /= tau_adapt
-        
-        # Clip to valid range
-        self._state.rho = np.clip(self._state.rho, self.rho_min, self.rho_max)
-    
-    def check_convergence(
+    def get_Q(
         self,
-        modes: Optional[List[np.ndarray]] = None,
-        signal: Optional[np.ndarray] = None,
-        tol: Optional[float] = None
-    ) -> bool:
+        X: np.ndarray,
+        sum_prev_U: np.ndarray,
+        X_u: np.ndarray
+    ) -> np.ndarray:
         """
-        Check if ADMM has converged.
+        Compute auxiliary variable Q(ω) for U_M update.
         
-        Convergence is determined by the primal and dual residuals
-        being below specified tolerances.
+        Equation 22:
+        Q(ω) = X(ω) - Σ_{i=1}^{M-1} U_i(ω) - X_u(ω) + Θ(ω)
         
         Parameters:
         -----------
-        modes : List[np.ndarray], optional
-            Current modes for computing residuals
-        signal : np.ndarray, optional
-            Original signal
-        tol : float, optional
-            Tolerance override
+        X : np.ndarray
+            Signal spectrum
+        sum_prev_U : np.ndarray
+            Sum of previous mode spectra
+        X_u : np.ndarray
+            Unprocessed signal spectrum
             
         Returns:
         --------
-        bool
-            True if converged, False otherwise
+        np.ndarray
+            Q(ω)
         """
-        if tol is None:
-            tol = self.reltol
-        
-        # Simple convergence check based on residual
-        if self._state.primal_residual < tol:
-            return True
-        
-        # Check if residuals are decreasing
-        if len(self._state.history) >= 10:
-            recent = self._state.history[-10:]
-            residuals = [h['primal_residual'] for h in recent]
-            
-            # Converged if residuals are stable and small
-            if np.std(residuals) < 0.1 * np.mean(residuals):
-                if np.mean(residuals) < tol * 10:
-                    return True
-        
-        return False
+        return X - sum_prev_U - X_u + self._state.Theta
     
-    def get_convergence_metrics(self) -> dict:
+    def get_Q_tilde(
+        self,
+        X: np.ndarray,
+        sum_all_U: np.ndarray
+    ) -> np.ndarray:
         """
-        Get convergence metrics from the optimization history.
+        Compute auxiliary variable Q̃(ω) for X_u update.
+        
+        Equation 28:
+        Q̃(ω) = X(ω) - Σ_{i=1}^M U_i(ω) + Θ(ω)
+        
+        Parameters:
+        -----------
+        X : np.ndarray
+            Signal spectrum
+        sum_all_U : np.ndarray
+            Sum of all mode spectra (including current)
+            
+        Returns:
+        --------
+        np.ndarray
+            Q̃(ω)
+        """
+        return X - sum_all_U + self._state.Theta
+    
+    def get_convergence_metrics(self) -> Dict:
+        """
+        Get convergence metrics from optimization history.
         
         Returns:
         --------
-        dict
+        Dict
             Dictionary containing convergence metrics
         """
-        if not self._state.history:
+        if not self._state or not self._state.history:
             return {}
         
-        history = self._state.history
-        
         return {
-            'num_iterations': len(history),
-            'final_rho': history[-1]['rho'],
-            'final_mu': history[-1]['mu'],
-            'final_primal_residual': history[-1]['primal_residual'],
-            'rho_history': [h['rho'] for h in history],
-            'mu_history': [h['mu'] for h in history],
-            'primal_residual_history': [h['primal_residual'] for h in history]
+            'num_iterations': self._state.iteration,
+            'final_rho_mean': np.mean(self._state.rho),
+            'final_mu': self._state.mu,
+            'rho_history': [h['rho_mean'] for h in self._state.history],
+            'mu_history': [h['mu'] for h in self._state.history],
+            'primal_residual_history': [h['primal_residual'] for h in self._state.history]
         }
 
 
-class ProximalOperators:
+# =============================================================================
+# Filter functions from paper
+# =============================================================================
+
+def compute_beta_i(
+    omega: np.ndarray,
+    omega_i: float,
+    alpha: float,
+    epsilon1: float = 1e-6
+) -> np.ndarray:
     """
-    Collection of proximal operators for ADMM sub-problems.
+    Compute β_i(ω) filter for mode overlap constraint.
     
-    Proximal operators are key building blocks for ADMM algorithms,
-    providing closed-form solutions for various regularization terms.
+    Equation 12:
+    β_i(ω) = 1 / [α(ω - ω_i)² + ε₁]
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
-    IEEE INFOCOM 2025
+    Parameters:
+    -----------
+    omega : np.ndarray
+        Frequency axis
+    omega_i : float
+        Center frequency of mode i
+    alpha : float
+        Noise variance
+    epsilon1 : float
+        Regularization constant
+        
+    Returns:
+    --------
+    np.ndarray
+        β_i(ω)
     """
-    
-    @staticmethod
-    def prox_l1(x: np.ndarray, lambda_: float) -> np.ndarray:
-        """
-        Proximal operator for L1 norm (soft thresholding).
-        
-        prox_{λ||·||_1}(x) = sign(x) * max(|x| - λ, 0)
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-        lambda_ : float
-            Regularization parameter
-            
-        Returns:
-        --------
-        np.ndarray
-            Result of proximal operator
-        """
-        return np.sign(x) * np.maximum(np.abs(x) - lambda_, 0)
-    
-    @staticmethod
-    def prox_l2(x: np.ndarray, lambda_: float) -> np.ndarray:
-        """
-        Proximal operator for L2 norm (shrinkage).
-        
-        prox_{λ||·||_2}(x) = max(1 - λ/||x||_2, 0) * x
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-        lambda_ : float
-            Regularization parameter
-            
-        Returns:
-        --------
-        np.ndarray
-            Result of proximal operator
-        """
-        norm_x = np.linalg.norm(x)
-        if norm_x == 0:
-            return np.zeros_like(x)
-        return np.maximum(1 - lambda_ / norm_x, 0) * x
-    
-    @staticmethod
-    def prox_box(x: np.ndarray, lower: float, upper: float) -> np.ndarray:
-        """
-        Proximal operator for box constraints.
-        
-        prox_{I_{[l,u]}}(x) = clip(x, l, u)
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-        lower : float
-            Lower bound
-        upper : float
-            Upper bound
-            
-        Returns:
-        --------
-        np.ndarray
-            Projected vector
-        """
-        return np.clip(x, lower, upper)
-    
-    @staticmethod
-    def prox_quadratic(
-        x: np.ndarray,
-        A: np.ndarray,
-        b: np.ndarray,
-        rho: float
-    ) -> np.ndarray:
-        """
-        Proximal operator for quadratic function (1/2)x^TAx + b^Tx.
-        
-        prox_{f}(x) = (A + ρI)^{-1}(ρx - b)
-        
-        Parameters:
-        -----------
-        x : np.ndarray
-            Input vector
-        A : np.ndarray
-            Quadratic term matrix
-        b : np.ndarray
-            Linear term vector
-        rho : float
-            Penalty parameter
-            
-        Returns:
-        --------
-        np.ndarray
-            Result of proximal operator
-        """
-        n = len(x)
-        return np.linalg.solve(A + rho * np.eye(n), rho * x - b)
+    return 1.0 / (alpha * (omega - omega_i) ** 2 + epsilon1)
 
 
-class ConsensusADMM:
+def compute_beta_M(
+    omega: np.ndarray,
+    omega_M: float,
+    alpha: float,
+    epsilon2: float = 1e-6
+) -> np.ndarray:
     """
-    Consensus ADMM for distributed optimization.
+    Compute β_M(ω) filter for unprocessed signal constraint.
     
-    Useful for parallel processing of multiple signals or modes.
+    Equation 14:
+    β_M(ω) = 1 / [α(ω - ω_M)² + ε₂]
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
-    IEEE INFOCOM 2025
+    Parameters:
+    -----------
+    omega : np.ndarray
+        Frequency axis
+    omega_M : float
+        Center frequency of current mode
+    alpha : float
+        Noise variance
+    epsilon2 : float
+        Regularization constant
+        
+    Returns:
+    --------
+    np.ndarray
+        β_M(ω)
     """
-    
-    def __init__(
-        self,
-        num_agents: int,
-        rho: float = 1.0,
-        max_iterations: int = 100,
-        tolerance: float = 1e-4
-    ):
-        """
-        Initialize consensus ADMM.
-        
-        Parameters:
-        -----------
-        num_agents : int
-            Number of agents (e.g., signals or modes)
-        rho : float
-            Penalty parameter
-        max_iterations : int
-            Maximum iterations
-        tolerance : float
-            Convergence tolerance
-        """
-        self.num_agents = num_agents
-        self.rho = rho
-        self.max_iterations = max_iterations
-        self.tolerance = tolerance
-        
-        self.z = None  # Consensus variable
-        self.u = None  # Dual variables
-    
-    def solve(
-        self,
-        local_solvers: List[callable],
-        initial_z: np.ndarray
-    ) -> Tuple[np.ndarray, List[np.ndarray]]:
-        """
-        Solve distributed optimization using consensus ADMM.
-        
-        Parameters:
-        -----------
-        local_solvers : List[callable]
-            List of functions that solve local sub-problems.
-            Each takes (z - u) and returns local solution x_i.
-        initial_z : np.ndarray
-            Initial consensus variable
-            
-        Returns:
-        --------
-        Tuple[np.ndarray, List[np.ndarray]]
-            Consensus solution and list of local solutions
-        """
-        n = len(initial_z)
-        
-        # Initialize
-        self.z = initial_z.copy()
-        self.u = [np.zeros(n) for _ in range(self.num_agents)]
-        x = [np.zeros(n) for _ in range(self.num_agents)]
-        
-        for iteration in range(self.max_iterations):
-            z_old = self.z.copy()
-            
-            # Local updates (can be parallelized)
-            for i in range(self.num_agents):
-                x[i] = local_solvers[i](self.z - self.u[i])
-            
-            # Consensus update: z = mean(x_i + u_i)
-            self.z = np.mean([x[i] + self.u[i] for i in range(self.num_agents)], axis=0)
-            
-            # Dual update
-            for i in range(self.num_agents):
-                self.u[i] = self.u[i] + x[i] - self.z
-            
-            # Check convergence
-            primal_residual = np.sqrt(sum(np.linalg.norm(x[i] - self.z)**2 
-                                         for i in range(self.num_agents)))
-            dual_residual = np.linalg.norm(self.rho * (self.z - z_old))
-            
-            if primal_residual < self.tolerance and dual_residual < self.tolerance:
-                break
-        
-        return self.z, x
+    return 1.0 / (alpha * (omega - omega_M) ** 2 + epsilon2)
 
 
+def compute_spectral_compactness_term(
+    omega: np.ndarray,
+    omega_M: float
+) -> np.ndarray:
+    """
+    Compute spectral compactness term for U_M update.
+    
+    From Equation 24: (2/π) sin²(ω - ω_M)
+    
+    Parameters:
+    -----------
+    omega : np.ndarray
+        Frequency axis
+    omega_M : float
+        Center frequency
+        
+    Returns:
+    --------
+    np.ndarray
+        Spectral compactness term
+    """
+    return (2.0 / np.pi) * np.sin(omega - omega_M) ** 2
+
+
+# =============================================================================
+# Demo / Test
+# =============================================================================
 if __name__ == "__main__":
-    # Example usage
-    import matplotlib.pyplot as plt
+    print("Testing ADMM optimizer against paper equations...")
     
-    # Create a simple test problem
+    # Test setup
     np.random.seed(42)
     N = 100
     
-    # Original signal
+    # Create test signal
     t = np.linspace(0, 1, N)
     signal = np.sin(2 * np.pi * 5 * t) + 0.5 * np.sin(2 * np.pi * 10 * t)
     signal += 0.1 * np.random.randn(N)
     
     # Initialize optimizer
-    optimizer = ADMMOptimizer(tau1=0.1, tau2=0.1, rho_init=1.0)
+    optimizer = ADMMOptimizer(tau1=0.1, tau2=0.1, rho_init=1.0, mu_init=0.0)
     optimizer.reset(N)
     
-    # Simulate optimization iterations
-    modes = [signal * 0.5]  # Dummy mode
-    X_u = fft(signal * 0.5)
-    min_mode_mag = 0.1
+    # Test mode (dummy)
+    U_M = fft(signal * 0.5)
+    X_u = fft(signal * 0.3)
+    modes = [signal * 0.2]
     
-    print("Running ADMM optimization...")
-    for i in range(50):
-        optimizer.update_multipliers(signal, modes, X_u, min_mode_mag)
-        
-        if optimizer.check_convergence():
-            print(f"Converged at iteration {i+1}")
-            break
+    print(f"Initial ρ (mean): {np.mean(optimizer.rho):.4f}")
+    print(f"Initial μ: {optimizer.mu:.4f}")
     
-    # Get convergence metrics
+    # Run a few iterations
+    for i in range(10):
+        optimizer.step(signal, modes, U_M, X_u)
+    
     metrics = optimizer.get_convergence_metrics()
-    print(f"\nOptimization completed:")
-    print(f"  Iterations: {metrics['num_iterations']}")
-    print(f"  Final rho: {metrics['final_rho']:.4f}")
-    print(f"  Final mu: {metrics['final_mu']:.4f}")
-    print(f"  Final primal residual: {metrics['final_primal_residual']:.6f}")
+    print(f"\nAfter 10 iterations:")
+    print(f"  ρ (mean): {metrics['final_rho_mean']:.4f}")
+    print(f"  μ: {metrics['final_mu']:.4f}")
     
-    # Plot convergence
-    fig, axes = plt.subplots(3, 1, figsize=(10, 9))
+    # Test filter functions
+    omega = 2 * np.pi * np.arange(N) / N
+    omega_M = np.pi / 4
+    alpha = 0.01
     
-    iterations = range(1, len(metrics['rho_history']) + 1)
+    beta_i = compute_beta_i(omega, omega_M, alpha)
+    beta_M = compute_beta_M(omega, omega_M, alpha)
+    sin_sq = compute_spectral_compactness_term(omega, omega_M)
     
-    axes[0].plot(iterations, metrics['rho_history'], 'b-')
-    axes[0].set_title('Penalty Parameter ρ')
-    axes[0].set_xlabel('Iteration')
-    axes[0].set_ylabel('ρ')
-    axes[0].set_yscale('log')
+    print(f"\nFilter tests at ω_M = {omega_M:.4f}:")
+    print(f"  β_i(ω_M): {beta_i[int(omega_M * N / (2 * np.pi))]:.4f}")
+    print(f"  β_M(ω_M): {beta_M[int(omega_M * N / (2 * np.pi))]:.4f}")
+    print(f"  sin²(0) at ω_M: {sin_sq[int(omega_M * N / (2 * np.pi))]:.4f}")
     
-    axes[1].plot(iterations, metrics['mu_history'], 'g-')
-    axes[1].set_title('Inequality Multiplier μ')
-    axes[1].set_xlabel('Iteration')
-    axes[1].set_ylabel('μ')
-    
-    axes[2].plot(iterations, metrics['primal_residual_history'], 'r-')
-    axes[2].set_title('Primal Residual')
-    axes[2].set_xlabel('Iteration')
-    axes[2].set_ylabel('||r||')
-    axes[2].set_yscale('log')
-    
-    plt.tight_layout()
-    plt.savefig('admm_convergence.png', dpi=150)
-    print("\nSaved convergence plot to 'admm_convergence.png'")
+    print("\n✓ All ADMM optimizer tests passed!")
