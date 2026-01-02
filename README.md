@@ -2,10 +2,10 @@
 
 ## Discrete Mode Decomposition Meets Shapley Value for Tactile Internet
 
-**Author:** Ali Vahedi (Mohammad Ali Vahedifar)  
+**Author:** Ali Vahedi 
 **Affiliation:** DIGIT and Department of ECE, Aarhus University, Denmark  
 **Email:** av@ece.au.dk  
-**IEEE INFOCOM 2025**
+**IEEE INFOCOM 2026**
 
 ---
 
@@ -37,7 +37,7 @@ This folder contains the MATLAB implementation of the DMD+SMV framework for robu
          Robust Signal Prediction in Tactile Internet},
   author={Vahedifar, Mohammad Ali and Zhang, Qi},
   booktitle={IEEE INFOCOM 2026},
-  year={2025}
+  year={2026}
 }
 ```
 
