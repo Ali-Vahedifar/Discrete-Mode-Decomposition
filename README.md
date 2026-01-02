@@ -1,343 +1,130 @@
-# DMD+SMV: Discrete Mode Decomposition Meets Shapley Value for Robust Signal Prediction in Tactile Internet
+# DMD+SMV MATLAB Implementation
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
-[![IEEE INFOCOM 2025](https://img.shields.io/badge/IEEE-INFOCOM%202025-green.svg)](https://infocom2025.ieee-infocom.org/)
+## Discrete Mode Decomposition Meets Shapley Value for Tactile Internet
 
-## 🏆 Accepted at IEEE INFOCOM 2025
-
-**Authors:** Ali Vahedi and Qi Zhang
-
-**Affiliation:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
-
-**Acknowledgments:** This research was supported by:
-- TOAST project, funded by the European Union's Horizon Europe research and innovation program under the Marie Skłodowska-Curie Actions Doctoral Network (Grant Agreement No. 101073465)
-
----## 🔗 Links
-
-- **Paper:** IEEE INFOCOM 2025 Proceedings
-- **Code:** [github.com/Ali-Vahedifar/Discrete-Mode-Decomposition](https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git)
-- **Dataset:** [Kinaesthetic Interactions Dataset (Zenodo)](https://doi.org/10.5281/zenodo.14924062)
-
-## 📖 Abstract
-
-The Tactile Internet (TI) requires ultra-low latency and high reliability to ensure stability and transparency in touch-enabled teleoperation. However, variable delays and packet loss present significant challenges to maintaining immersive haptic communication. This work proposes a novel predictive framework that integrates **Discrete Mode Decomposition (DMD)** with **Shapley Mode Value (SMV)** for accurate and timely haptic signal prediction.
-
-
-<img width="492" height="494" alt="Screenshot 2025-12-31 at 22 47 39" src="https://github.com/user-attachments/assets/b2ef6401-d026-4366-becb-004dc03c89de" />
-
-- **DMD** decomposes haptic signals into interpretable intrinsic modes
-- **SMV** evaluates each mode's contribution to prediction accuracy, aligned with goal-oriented semantic communication
-- Combined **DMD+SMV** accelerates inference, enabling efficient communication and smooth teleoperation
-
-
+**Author:** Ali Vahedi (Mohammad Ali Vahedifar)  
+**Affiliation:** DIGIT and Department of ECE, Aarhus University, Denmark  
+**Email:** av@ece.au.dk  
+**IEEE INFOCOM 2025**
 
 ---
 
-## 🏗️ Project Structure
+## Overview
 
-```
-dmd-smv-tactile-internet/
-├── README.md                    # This file
-├── LICENSE                      # MIT License
-├── requirements.txt             # Python dependencies
-├── setup.py                     # Package installation
-├── pyproject.toml              # Modern Python packaging
-│
-├── configs/                     # Configuration files
-│   ├── default_config.yaml     # Default training configuration
-│   ├── transformer_config.yaml # Transformer-specific settings
-│   ├── resnet_config.yaml      # ResNet-specific settings
-│   └── lstm_config.yaml        # LSTM-specific settings
-│
-├── src/                         # Source code
-│   ├── __init__.py
-│   ├── dmd/                     # Discrete Mode Decomposition
-│   │   ├── __init__.py
-│   │   ├── decomposition.py    # Core DMD algorithm
-│   │   ├── wiener_filter.py    # Discrete Wiener filtering
-│   │   ├── hilbert_transform.py # Discrete Hilbert transform
-│   │   └── optimization.py     # ADMM optimization
-│   │
-│   ├── smv/                     # Shapley Mode Value
-│   │   ├── __init__.py
-│   │   ├── shapley_value.py    # Shapley value computation
-│   │   ├── monte_carlo.py      # Monte Carlo approximation
-│   │   └── mode_valuation.py   # Mode valuation utilities
-│   │
-│   ├── models/                  # Neural Network architectures
-│   │   ├── __init__.py
-│   │   ├── transformer.py      # Transformer architecture
-│   │   ├── resnet.py           # ResNet-32 architecture
-│   │   ├── lstm.py             # LSTM architecture
-│   │   └── base_model.py       # Base model class
-│   │
-│   ├── data/                    # Data handling
-│   │   ├── __init__.py
-│   │   ├── dataset.py          # Dataset classes
-│   │   ├── dataloader.py       # DataLoader utilities
-│   │   └── preprocessing.py    # Data preprocessing
-│   │
-│   ├── training/                # Training utilities
-│   │   ├── __init__.py
-│   │   ├── trainer.py          # Main training loop
-│   │   ├── losses.py           # Loss functions
-│   │   └── callbacks.py        # Training callbacks
-│   │
-│   ├── evaluation/              # Evaluation utilities
-│   │   ├── __init__.py
-│   │   ├── metrics.py          # Accuracy, PSNR, etc.
-│   │   ├── inference.py        # Inference engine
-│   │   └── benchmarks.py       # Benchmarking utilities
-│   │
-│   └── utils/                   # Utility functions
-│       ├── __init__.py
-│       ├── logger.py           # Logging utilities
-│       ├── visualization.py    # Plotting and visualization
-│       ├── config.py           # Configuration management
-│       └── seed.py             # Reproducibility utilities
-│
-├── experiments/                 # Experiment scripts
-│   ├── train_all_models.py     # Train all architectures
-│   ├── evaluate_accuracy.py    # Accuracy evaluation
-│   ├── evaluate_inference.py   # Inference time evaluation
-│   ├── ablation_study.py       # Ablation studies
-│   └── generate_figures.py     # Generate paper figures
-│
-├── scripts/                     # Utility scripts
-│   ├── download_data.py        # Download dataset
-│   ├── prepare_data.py         # Prepare data for training
-│   └── run_experiments.sh      # Run all experiments
-│
-├── tests/                       # Unit tests
-│   ├── test_dmd.py             # Test DMD module
-│   ├── test_smv.py             # Test SMV module
-│   ├── test_models.py          # Test neural networks
-│   └── test_metrics.py         # Test evaluation metrics
-│
-├── notebooks/                   # Jupyter notebooks
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_dmd_visualization.ipynb
-│   ├── 03_smv_analysis.ipynb
-│   └── 04_results_analysis.ipynb
-│
-├── results/                     # Results storage
-│   ├── figures/                # Generated figures
-│   └── logs/                   # Training logs
-│
-└── docs/                        # Documentation
-    ├── installation.md
-    ├── usage.md
-    └── api_reference.md
+This folder contains the MATLAB implementation of the DMD+SMV framework for robust signal prediction in Tactile Internet systems.
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `DMD.m` | Main Discrete Mode Decomposition algorithm (Algorithm 1) |
+| `SMV.m` | Shapley Mode Value computation with Monte Carlo approximation (Algorithm 2) |
+| `hilbert_transform.m` | Discrete Hilbert Transform (Equations 6-8) |
+| `wiener_filter.m` | Discrete Wiener Filtering (Equations 2-5) |
+| `demo_dmd_smv.m` | Complete demonstration script |
+
+## Quick Start
+
+```matlab
+% Run the demo
+demo_dmd_smv
+
+% Or use individual functions:
+% 1. Apply DMD
+[modes, center_freqs, residual] = DMD(signal, alpha);
+
+% 2. Compute Shapley values
+[shapley_values, rankings] = SMV(modes, center_freqs, predictor, X_val, y_val);
 ```
 
----
+## Algorithm Parameters
 
-## 🚀 Quick Start
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/alivahedi/dmd-smv-tactile-internet.git
-cd dmd-smv-tactile-internet
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Install package in development mode
-pip install -e .
+### DMD Parameters (from paper)
+```matlab
+params.epsilon1 = 1e-6;      % Regularization (Eq. 12)
+params.epsilon2 = 1e-6;      % Regularization (Eq. 14)
+params.tau1 = 0.1;           % Step size for ρ update (Eq. 31)
+params.tau2 = 0.1;           % Step size for μ update (Eq. 32)
+params.kappa1 = 1e-3;        % Inner convergence threshold
+params.kappa2 = 1e-3;        % Outer convergence threshold
+params.max_modes = 10;       % Maximum modes to extract
 ```
 
-### Download Dataset
-
-```bash
-# Download the Kinaesthetic Interactions Dataset
-python scripts/download_data.py
+### SMV Parameters (from paper)
+```matlab
+params.tolerance = 0.01;     % 1% convergence tolerance (Eq. 36)
+params.max_iterations = 1000;
+params.epsilon3 = 0.01;      % Performance tolerance
+params.metric = 'accuracy';  % Performance metric
 ```
 
-### Quick Training Example
+## Key Equations
 
-```python
-from src.dmd import DiscreteModeDcomposition
-from src.smv import ShapleyModeValue
-from src.models import TransformerPredictor
-from src.training import Trainer
+### DMD Update Equations
 
-# Initialize DMD
-dmd = DiscreteModeDcomposition(noise_variance=0.01)
-
-# Decompose signal
-modes, center_frequencies = dmd.decompose(signal)
-
-# Compute Shapley Mode Values
-smv = ShapleyModeValue()
-mode_values = smv.compute(modes, model, validation_data)
-
-# Train Transformer with important modes
-trainer = Trainer(model=TransformerPredictor(), config=config)
-trainer.train(train_data, val_data)
+**Mode Update (Eq. 24):**
+```
+U_M^{n+1}(ω) = [ρ(ω)/2 * Q(ω)] / [ρ(ω)/2 + Σ|β_i(ω)|² + (2/π)sin²(ω-ω_M)]
 ```
 
-### Run Full Experiment Pipeline
-
-```bash
-# Run all experiments
-bash scripts/run_experiments.sh
-
-# Or run individual experiments
-python experiments/train_all_models.py --config configs/default_config.yaml
-python experiments/evaluate_accuracy.py --checkpoint best_model.pt
-python experiments/generate_figures.py --output results/figures/
+**Center Frequency Update (Eq. 27):**
+```
+ω_M^{n+1} = ∫ω|U_M(ω)|²dω / ∫|U_M(ω)|²dω
 ```
 
----
-
-## 📊 Reproducing Paper Results
-
-### Training All Models
-
-```bash
-python experiments/train_all_models.py \
-    --architectures transformer resnet lstm \
-    --methods baseline dmd dmd_smv \
-    --window_sizes 1 5 10 25 50 100 \
-    --epochs 200 \
-    --seed 42
+**Unprocessed Signal Update (Eq. 30):**
+```
+X_u^{n+1}(ω) = [ρ(ω) * Q̃(ω)] / [2|β_M(ω)|² + 2μ + ρ(ω)]
 ```
 
-### Generate Main Results Figure (Figure 3)
-
-```bash
-python experiments/generate_figures.py \
-    --figure accuracy_inference \
-    --output results/figures/figure3.pdf
+**Multiplier Updates (Eq. 31-32):**
+```
+ρ^{n+1}(ω) = ρ^n(ω) + τ_1 * (X(ω) - Σ U_i(ω))
+μ^{n+1} = max(0, μ^n + τ_2 * ∫(||X_u||² - ||U_min||²)dω)
 ```
 
-### Ablation Study (Mode Update Frequency)
-
-```bash
-python experiments/ablation_study.py \
-    --update_intervals 40 90 100 \
-    --architecture transformer \
-    --output results/ablation/
+### Shapley Mode Value (Eq. 33)
+```
+X_i = Σ_{S⊆D\{i}} [|S|!(|D|-|S|-1)!/|D|!] * [V(S∪{i}) - V(S)]
 ```
 
----
+## Expected Results (from paper)
 
-## 📈 Results
+| Metric | Value |
+|--------|-------|
+| Accuracy (W=1) | 98.9% |
+| Accuracy (W=100) | 92.5% |
+| PSNR (W=1) | ~29.5 dB |
+| Inference time (W=1) | 0.056 ms |
+| Inference time (W=100) | 2 ms |
+| Speedup vs baseline | 820× |
 
-### Accuracy Comparison (Figure 3)
+## Requirements
 
-Our DMD+SMV framework achieves:
-- **98.9%** accuracy for 1-sample prediction (Transformer)
-- **92.5%** accuracy for 100-sample prediction (Transformer)
-- **820× speedup** compared to baseline methods
+- MATLAB R2019b or later
+- Signal Processing Toolbox (optional, for comparison)
 
-### PSNR Results (Figure 4)
-
-- **29.5 dB** PSNR at W=1 for human side
-- **27.5 dB** PSNR at W=1 for robot side
-- Consistent **9-10 dB improvement** over baseline across all horizons
-
-### Inference Time (Table I & II)
-
-| Architecture | DMD+SMV | DMD | Baseline |
-|--------------|---------|-----|----------|
-| Transformer | 2.85ms | 7.30ms | 1640ms |
-| ResNet-32 | 4.30ms | 10.45ms | 2059ms |
-| LSTM | 6.00ms | 15.2ms | 2616ms |
-
-### FLOPs and FLOPS Comparison (Table III)
-
-| Architecture | FLOPs (DMD) | FLOPs (DMD+SMV) | FLOPS (DMD) | FLOPS (DMD+SMV) |
-|--------------|-------------|-----------------|-------------|-----------------|
-| LSTM | 3.4×10⁷ | 2.1×10⁶ | 2.24×10⁹ | 0.35×10⁹ |
-| ResNet-32 | 11.2×10⁷ | 8.6×10⁶ | 10.72×10⁹ | 2×10⁹ |
-| Transformer | 19.3×10⁷ | 14.8×10⁶ | **26.4×10⁹** | **5.19×10⁹** |
-
-
-## 🔧 Configuration
-
-### Default Configuration
-
-```yaml
-# configs/default_config.yaml
-training:
-  epochs: 200
-  batch_size: 64
-  learning_rate: 0.001
-  lr_decay_epochs: [80, 120, 170]
-  lr_decay_factor: 0.005
-  dropout: 0.1
-
-dmd:
-  noise_variance: 0.01
-  epsilon1: 1e-6
-  epsilon2: 1e-6
-  kappa1: 1e-3
-  kappa2: 1e-3
-
-smv:
-  tolerance: 0.01
-  max_iterations: 1000
-
-evaluation:
-  window_sizes: [1, 5, 10, 25, 50, 100]
-  num_runs: 10
-```
-
----
-
-## 📚 Citation
-
-If you use this code in your research, please cite our paper:
+## Citation
 
 ```bibtex
-@inproceedings{vahedifar2026dmd,
-  title={Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction in Tactile Internet},
+@inproceedings{vahedifar2025dmd,
+  title={Discrete Mode Decomposition Meets Shapley Value: 
+         Robust Signal Prediction in Tactile Internet},
   author={Vahedifar, Mohammad Ali and Zhang, Qi},
-  booktitle={IEEE INFOCOM 2026 - IEEE Conference on Computer Communications},
-  year={2026},
-  organization={IEEE}
+  booktitle={IEEE INFOCOM 2025},
+  year={2025}
 }
 ```
 
----
+## Acknowledgments
 
-## 📧 Contact
+This research was supported by:
+- TOAST project (EU Horizon Europe, Grant No. 101073465)
+- Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
 
-- **Ali Vahedi**: av@ece.au.dk
+## Contact
 
-**Institution:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
+For questions or issues, contact: av@ece.au.dk
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- [TOAST Doctoral Network](https://toast-dn.eu/) - EU Horizon Europe Program
-- [Danish Council for Independent Research](https://dff.dk/) - eTouch Project
-- [NordForsk](https://www.nordforsk.org/) - Nordic Edge Intelligence Cooperation
-- [Kinaesthetic Interactions Dataset](https://doi.org/10.5281/zenodo.14924062)
-
----
-
-## 📜 Changelog
-
-### v1.0.0 (2025)
-- Initial release
-- Full implementation of DMD and SMV algorithms
-- Support for Transformer, ResNet-32, and LSTM architectures
-- Comprehensive evaluation framework
-- Paper reproduction scripts
+GitHub: https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git
