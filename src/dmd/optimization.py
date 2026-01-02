@@ -1,10 +1,7 @@
 """
-ADMM Optimization for Discrete Mode Decomposition - EXACT Paper Implementation
+ADMM Optimization for Discrete Mode Decomposition
 ===============================================================================
 
-EXACT implementation of the ADMM algorithm as described in:
-"Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction
-in Tactile Internet" - IEEE INFOCOM 2025
 
 Author: Ali Vahedi (Mohammad Ali Vahedifar)
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
@@ -15,31 +12,7 @@ This research was supported by:
 - Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
 - NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
 
-Mathematical Background (from paper):
 -------------------------------------
-The DMD optimization problem (Eq. 17):
-    min_{u_M, ω_M} T1 + T2 + T3
-    s.t. x[n] = Σ_{i=1}^{M} u_i[n] + x_u[n]       (Eq. 15)
-         ||x_u[n]||²₂ ≤ ||u_min[n]||²₂             (Eq. 16)
-
-The Augmented Lagrangian (Eq. 18):
-    L_aug(μ,ρ) = ||∂_n[A_n * u_M] e^{-jω_M n}||²₂ + Σ||β_i * u_M||²₂
-                 + ||β_M * x_u||²₂ + (ρ/2)||x - Σu_i - x_u + θ||²₂
-                 + μ(||x_u||²₂ - ||u_min||²₂) - (ρ/2)||θ||²₂
-
-Frequency Domain Lagrangian (Eq. 19):
-    L_aug(μ,ρ(ω)) = (2/π)∫₀^π sin²(ω-ω_M)|U_M(ω)|² dω
-                    + Σ∫₀^π |β_i(ω)U_M(ω)|² dω
-                    + ∫₀^π |β_M(ω)X_u(ω)|² dω
-                    + (ρ(ω)/2)||X - ΣU_i - X_u + Θ||²₂
-                    + μ(||X_u||²₂ - ||U_min||²₂) - (ρ(ω)/2)||Θ||²₂
-
-ADMM Update Equations:
-    Eq. 24: U_M update
-    Eq. 27: ω_M update
-    Eq. 30: X_u update (with 2μ term)
-    Eq. 31: ρ update (dual ascent for equality constraint)
-    Eq. 32: μ update (with max(0,...) for inequality constraint)
 """
 
 import numpy as np
