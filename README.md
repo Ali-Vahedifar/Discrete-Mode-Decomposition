@@ -7,7 +7,7 @@
 
 ## 🏆 Accepted at IEEE INFOCOM 2025
 
-**Authors:** Mohammad Ali Vahedifar (Ali Vahedi) and Qi Zhang
+**Authors:** Ali Vahedi and Qi Zhang
 
 **Affiliation:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
 
