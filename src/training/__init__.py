@@ -5,7 +5,7 @@ Training Module for DMD+SMV Signal Prediction
 Comprehensive training utilities including trainer classes,
 loss functions, optimizers, and callbacks.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -52,6 +52,6 @@ __all__ = [
     'TensorBoardCallback'
 ]
 
-__author__ = "Ali Vahedi (Mohammad Ali Vahedifar)"
+__author__ = "Ali Vahedi"
 __email__ = "av@ece.au.dk"
 __institution__ = "Aarhus University, Denmark"

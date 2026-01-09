@@ -5,7 +5,7 @@ Loss Functions for Signal Prediction
 Implementation of various loss functions for training signal
 prediction models in Tactile Internet applications.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -26,7 +26,7 @@ class MSELoss(nn.Module):
     
     Standard MSE loss used for signal prediction.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -72,7 +72,7 @@ class MAELoss(nn.Module):
     
     More robust to outliers than MSE.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -106,7 +106,7 @@ class HuberLoss(nn.Module):
     linear for large errors. Good balance between
     sensitivity and robustness.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -144,7 +144,7 @@ class PSNRLoss(nn.Module):
     
     PSNR = 10 * log10(MAX^2 / MSE)
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -221,7 +221,7 @@ class PerceptualLoss(nn.Module):
     Combines MSE with frequency domain loss for better
     perceptual quality of predicted signals.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -279,7 +279,7 @@ class TemporalConsistencyLoss(nn.Module):
     Encourages smooth temporal transitions in predictions,
     important for haptic signal continuity.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -337,7 +337,7 @@ class CombinedLoss(nn.Module):
     Allows flexible combination of multiple loss functions
     with configurable weights.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:
@@ -425,7 +425,7 @@ class FeatureWiseLoss(nn.Module):
     Computes loss separately for each feature (position,
     velocity, force) and combines with configurable weights.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -519,7 +519,7 @@ class AccuracyLoss(nn.Module):
     Accuracy = 1 - (MAE / target_range)
     Loss = 1 - Accuracy = MAE / target_range
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -572,7 +572,7 @@ def create_loss_function(
     nn.Module
         Loss function module
         
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:

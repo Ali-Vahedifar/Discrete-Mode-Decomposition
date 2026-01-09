@@ -2,34 +2,36 @@
 Discrete Hilbert Transform Implementation
 =========================================
 
+Author: Ali Vahedi
+Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
+IEEE INFOCOM 2025
+This research was supported by:
+- TOAST project (EU Horizon Europe, Grant No. 101073465)
+- Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
+
 Implementation of the Discrete Hilbert Transform for computing analytic signals
 as part of the DMD algorithm.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
-Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-Email: av@ece.au.dk
-
-IEEE INFOCOM 2026
-
-Mathematical Background:
------------------------
+Mathematical Background (Equations 6-8):
+---------------------------------------
 The N-point Hilbert transform is characterized by its DFT coefficients:
 
     H[k] = { -j  for 1 ≤ k < N/2
            {  0  for k = 0, N/2
            {  j  for N/2 < k ≤ N-1
 
-The impulse response is:
+The impulse response is (Eq. 7):
     h[n] = (2 * sin²(πn/2)) / (πn) = (1 - (-1)^n) / (πn),  n ≠ 0
     h[0] = 0
 
-The analytic signal z[n] associated with a real discrete signal x[n] is:
-    z[n] = x[n] + j * H{x[n]}
+The analytic signal q[n] associated with a real discrete signal x[n] is (Eq. 8):
+    q[n] = x[n] + j * H{x[n]}
 
 This allows extraction of:
-- Instantaneous amplitude: A[n] = |z[n]|
-- Instantaneous phase: φ[n] = arg(z[n])
-- Instantaneous frequency: ω[n] = dφ[n]/dn
+- Instantaneous amplitude: A[n] = |q[n]|
+- Instantaneous phase: φ[n] = arg(q[n])
+- Instantaneous frequency: ω[n] = φ[n+1] - φ[n]
 """
 
 import numpy as np
@@ -45,7 +47,8 @@ class DiscreteHilbertTransform:
     This class implements the discrete Hilbert transform as defined in the paper,
     used for computing instantaneous amplitude and frequency of IMFs.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     
     The Hilbert transform converts a real signal into its analytic signal,
@@ -401,7 +404,8 @@ class HilbertHuangTransform:
     
     Combines empirical mode decomposition with Hilbert spectral analysis.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     """
     

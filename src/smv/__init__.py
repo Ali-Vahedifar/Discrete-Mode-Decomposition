@@ -5,7 +5,7 @@ Shapley Mode Value (SMV) Module
 This module implements the Shapley Mode Value algorithm for evaluating
 the contribution of each mode to the prediction task.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 

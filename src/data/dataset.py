@@ -5,7 +5,7 @@ Dataset Classes for Haptic Signal Data
 Implementation of PyTorch dataset classes for haptic signal data,
 supporting various haptic interaction scenarios.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -80,7 +80,7 @@ class HapticDataset(Dataset):
     Supports loading haptic data from various file formats and creating
     sliding window samples for training signal prediction models.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:
@@ -309,7 +309,7 @@ class HapticMultiChannelDataset(HapticDataset):
     
     Organizes data into separate channels for each type of measurement.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -385,7 +385,7 @@ class TapAndHoldDataset(HapticMultiChannelDataset):
     This is the specific dataset used for evaluation in the paper,
     containing kinaesthetic interactions from Novint Falcon device.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Reference:
@@ -485,7 +485,7 @@ class DMDDataset(HapticDataset):
     Extends HapticDataset to include mode information for
     each sample, enabling mode-aware training.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

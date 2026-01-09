@@ -2,7 +2,7 @@
 Logging Utilities
 =================
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -24,7 +24,7 @@ def setup_logger(
     """
     Setup logger with file and console handlers.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     logger = logging.getLogger(name)

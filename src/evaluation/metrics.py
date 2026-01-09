@@ -8,7 +8,7 @@ Implementation of evaluation metrics used in the IEEE INFOCOM 2025 paper:
 - PSNR (dB)
 - MSE, MAE, RMSE
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -42,7 +42,7 @@ def compute_accuracy(
     This is the primary accuracy metric used in the paper.
     Paper achieves: 98.9% (W=1), 92.5% (W=100) with DMD+SMV+Transformer.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     if isinstance(predictions, torch.Tensor):
@@ -79,7 +79,7 @@ def compute_psnr(
     
     Paper Results: ~29.5 dB (human), ~27.5 dB (robot) at W=1
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     if isinstance(predictions, torch.Tensor):

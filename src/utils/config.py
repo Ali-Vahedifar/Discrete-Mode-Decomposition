@@ -2,7 +2,7 @@
 Configuration Management
 ========================
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -22,7 +22,7 @@ class Config:
     
     Default values match the paper's experimental setup.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     # Training parameters (from paper)

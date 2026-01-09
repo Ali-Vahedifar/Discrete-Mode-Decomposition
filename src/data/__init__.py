@@ -5,7 +5,7 @@ Data Module for DMD+SMV Tactile Internet Signal Prediction
 This module provides data handling utilities for haptic signal data,
 including dataset classes, dataloaders, and preprocessing functions.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -52,6 +52,6 @@ __all__ = [
     'remove_outliers'
 ]
 
-__author__ = "Ali Vahedi (Mohammad Ali Vahedifar)"
+__author__ = "Ali Vahedi"
 __email__ = "av@ece.au.dk"
 __institution__ = "Aarhus University, Denmark"

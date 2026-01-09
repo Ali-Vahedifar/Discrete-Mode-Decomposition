@@ -5,7 +5,7 @@ DataLoader Utilities for Haptic Signal Data
 Custom dataloader implementations with support for sliding windows,
 batch processing, and multi-worker loading.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -113,7 +113,7 @@ class HapticDataLoader:
     Provides easy-to-use interface for creating train/val/test
     dataloaders with proper configuration.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:
@@ -326,7 +326,7 @@ class InfiniteDataLoader:
     Useful for training with a fixed number of iterations
     instead of epochs.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -356,7 +356,7 @@ class BatchSampler:
     Supports various sampling strategies including
     sequential, random, and importance sampling.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -421,7 +421,7 @@ class SequenceDataLoader:
     Handles variable-length sequences and provides
     methods for different prediction modes.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

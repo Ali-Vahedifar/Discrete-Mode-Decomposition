@@ -5,7 +5,7 @@ DMD+SMV Tactile Internet Package
 Discrete Mode Decomposition meets Shapley Value for Robust Signal Prediction
 in Tactile Internet.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -28,7 +28,7 @@ Modules:
 """
 
 __version__ = "1.0.0"
-__author__ = "Ali Vahedi (Mohammad Ali Vahedifar)"
+__author__ = "Ali Vahedi"
 __email__ = "av@ece.au.dk"
 __license__ = "MIT"
 __copyright__ = "Copyright 2025, Ali Vahedi and Qi Zhang, Aarhus University"

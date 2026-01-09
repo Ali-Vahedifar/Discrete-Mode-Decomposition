@@ -2,7 +2,7 @@
 Utilities Module for DMD+SMV Signal Prediction
 ==============================================
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -20,5 +20,5 @@ __all__ = [
     'plot_training_curves', 'plot_accuracy_comparison'
 ]
 
-__author__ = "Ali Vahedi (Mohammad Ali Vahedifar)"
+__author__ = "Ali Vahedi"
 __email__ = "av@ece.au.dk"

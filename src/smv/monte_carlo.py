@@ -2,23 +2,25 @@
 Monte Carlo Approximation for Shapley Values
 =============================================
 
-Implementation of Monte Carlo methods for efficient Shapley value computation.
-
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-Email: av@ece.au.dk
-
 IEEE INFOCOM 2025
+This research was supported by:
+- TOAST project (EU Horizon Europe, Grant No. 101073465)
+- Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
+
+Implementation of Monte Carlo methods for efficient Shapley value computation.
 
 Mathematical Background:
 -----------------------
-Computing exact Shapley values requires 2^M evaluations, which is intractable
-for large M. Monte Carlo approximation rewrites the Shapley value as (Eq. 35):
+Computing exact Shapley values requires 2^Z evaluations, which is intractable
+for large Z. Monte Carlo approximation rewrites the Shapley value as:
 
-    X_i = E_U[V(S_i^U ∪ {i}) - V(S_i^U)]
+    X_k = E_U[V(S_k^U ∪ {k}) - V(S_k^U)]
 
-where U is a uniform permutation of D and S_i^U is the set of elements
-before i in permutation U.
+where U is a uniform permutation of D and S_k^U is the set of elements
+before k in permutation U.
 
 The Monte Carlo algorithm:
 1. Sample permutations uniformly
@@ -26,6 +28,9 @@ The Monte Carlo algorithm:
 3. Average contributions across permutations
 
 This gives an unbiased estimator with variance decreasing as O(1/T).
+
+Convergence criterion (Eq. 24):
+    (1/Z)Σ_{k=1}^Z |X_k^t - X_k^{t-100}|/|X_k^t| < 0.01
 """
 
 import numpy as np
@@ -42,7 +47,7 @@ class MonteCarloConfig:
     
     Attributes:
         max_iterations: Maximum number of permutation samples
-        tolerance: Convergence tolerance (Eq. 36)
+        tolerance: Convergence tolerance (Eq. 24)
         check_interval: Iterations between convergence checks
         use_antithetic: Use antithetic variates for variance reduction
         use_stratified: Use stratified sampling
@@ -86,7 +91,8 @@ class MonteCarloShapley:
     This class implements Algorithm 2 from the paper with several
     variance reduction techniques for faster convergence.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     
     Variance Reduction Techniques:
@@ -98,7 +104,7 @@ class MonteCarloShapley:
     Example:
     --------
     >>> mc = MonteCarloShapley(config)
-    >>> result = mc.compute(M=5, value_function=eval_coalition)
+    >>> result = mc.compute(Z=5, value_function=eval_coalition)
     >>> print(f"Shapley values: {result.values}")
     """
     
@@ -123,7 +129,7 @@ class MonteCarloShapley:
     
     def compute(
         self,
-        M: int,
+        Z: int,
         value_function: Callable[[Set[int]], float],
         performance_tolerance: Optional[float] = None
     ) -> MonteCarloResult:
@@ -134,7 +140,7 @@ class MonteCarloShapley:
         
         Parameters:
         -----------
-        M : int
+        Z : int
             Number of modes
         value_function : Callable
             Function V(S) that returns performance score for coalition S.
@@ -148,12 +154,12 @@ class MonteCarloShapley:
             Estimation result with Shapley values and statistics
         """
         # Initialize statistics
-        self._means = np.zeros(M)
-        self._m2 = np.zeros(M)
-        self._counts = np.zeros(M)
+        self._means = np.zeros(Z)
+        self._m2 = np.zeros(Z)
+        self._counts = np.zeros(Z)
         
         # Get V(D) for early stopping
-        V_full = value_function(set(range(M)))
+        V_full = value_function(set(range(Z)))
         epsilon_3 = performance_tolerance or self.config.tolerance * V_full
         
         convergence_history = []
@@ -169,7 +175,7 @@ class MonteCarloShapley:
         
         for t in pbar:
             # Generate permutation(s)
-            permutations = self._generate_permutations(M, t)
+            permutations = self._generate_permutations(Z, t)
             
             for perm in permutations:
                 # Scan through permutation
@@ -189,7 +195,7 @@ class MonteCarloShapley:
                     'std_errors': std_errors.copy()
                 })
                 
-                # Check convergence criterion (Eq. 36)
+                # Check convergence criterion (Eq. 24)
                 if prev_values is not None:
                     rel_errors = np.abs(current_values - prev_values) / (np.abs(current_values) + 1e-10)
                     mean_rel_error = np.mean(rel_errors[np.isfinite(rel_errors)])
@@ -218,13 +224,13 @@ class MonteCarloShapley:
             convergence_history=convergence_history
         )
     
-    def _generate_permutations(self, M: int, iteration: int) -> List[np.ndarray]:
+    def _generate_permutations(self, Z: int, iteration: int) -> List[np.ndarray]:
         """
         Generate permutation(s) for this iteration.
         
         Parameters:
         -----------
-        M : int
+        Z : int
             Number of modes
         iteration : int
             Current iteration number
@@ -237,7 +243,7 @@ class MonteCarloShapley:
         permutations = []
         
         # Main permutation
-        perm = np.random.permutation(M)
+        perm = np.random.permutation(Z)
         permutations.append(perm)
         
         # Antithetic variate (reverse permutation)
@@ -368,11 +374,12 @@ class StratifiedMonteCarloShapley(MonteCarloShapley):
     Uses stratified sampling to ensure each mode appears in
     each position of the permutation with equal frequency.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     """
     
-    def _generate_permutations(self, M: int, iteration: int) -> List[np.ndarray]:
+    def _generate_permutations(self, Z: int, iteration: int) -> List[np.ndarray]:
         """
         Generate stratified permutation.
         
@@ -383,12 +390,12 @@ class StratifiedMonteCarloShapley(MonteCarloShapley):
         # Stratified: ensure position coverage
         if self.config.use_stratified:
             # Latin hypercube-like approach
-            base_perm = np.random.permutation(M)
-            shift = iteration % M
+            base_perm = np.random.permutation(Z)
+            shift = iteration % Z
             perm = np.roll(base_perm, shift)
             permutations.append(perm)
         else:
-            perm = np.random.permutation(M)
+            perm = np.random.permutation(Z)
             permutations.append(perm)
         
         if self.config.use_antithetic:
@@ -404,7 +411,8 @@ class KernelSHAP:
     Uses weighted linear regression in feature space for faster
     Shapley value estimation.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     
     Reference:
@@ -428,7 +436,7 @@ class KernelSHAP:
     
     def compute(
         self,
-        M: int,
+        Z: int,
         value_function: Callable[[Set[int]], float]
     ) -> np.ndarray:
         """
@@ -436,7 +444,7 @@ class KernelSHAP:
         
         Parameters:
         -----------
-        M : int
+        Z : int
             Number of modes
         value_function : Callable
             Coalition value function
@@ -447,7 +455,7 @@ class KernelSHAP:
             Estimated Shapley values
         """
         # Sample coalitions with Shapley kernel weights
-        X, weights = self._sample_coalitions(M)
+        X, weights = self._sample_coalitions(Z)
         
         # Evaluate coalitions
         y = np.array([value_function(self._mask_to_set(x)) for x in X])
@@ -457,13 +465,13 @@ class KernelSHAP:
         
         return shapley_values
     
-    def _sample_coalitions(self, M: int) -> Tuple[np.ndarray, np.ndarray]:
+    def _sample_coalitions(self, Z: int) -> Tuple[np.ndarray, np.ndarray]:
         """
         Sample coalitions with Shapley kernel weights.
         
         Parameters:
         -----------
-        M : int
+        Z : int
             Number of modes
             
         Returns:
@@ -475,38 +483,38 @@ class KernelSHAP:
         weights = []
         
         # Always include empty and full coalition
-        X.append(np.zeros(M))
+        X.append(np.zeros(Z))
         weights.append(1e6)  # High weight
-        X.append(np.ones(M))
+        X.append(np.ones(Z))
         weights.append(1e6)
         
         # Sample other coalitions
         for _ in range(self.num_samples - 2):
             # Random coalition size (favor small and large)
-            s = np.random.choice(range(1, M))
+            s = np.random.choice(range(1, Z))
             
             # Random coalition of size s
-            mask = np.zeros(M)
-            indices = np.random.choice(M, s, replace=False)
+            mask = np.zeros(Z)
+            indices = np.random.choice(Z, s, replace=False)
             mask[indices] = 1
             
             X.append(mask)
             
             # Shapley kernel weight
-            weight = self._shapley_kernel_weight(M, s)
+            weight = self._shapley_kernel_weight(Z, s)
             weights.append(weight)
         
         return np.array(X), np.array(weights)
     
-    def _shapley_kernel_weight(self, M: int, s: int) -> float:
+    def _shapley_kernel_weight(self, Z: int, s: int) -> float:
         """
         Compute Shapley kernel weight.
         
-        weight(s) = (M-1) / (C(M,s) * s * (M-s))
+        weight(s) = (Z-1) / (C(Z,s) * s * (Z-s))
         
         Parameters:
         -----------
-        M : int
+        Z : int
             Total number of modes
         s : int
             Coalition size
@@ -518,10 +526,10 @@ class KernelSHAP:
         """
         from scipy.special import comb
         
-        if s == 0 or s == M:
+        if s == 0 or s == Z:
             return 1e6  # Infinity for full/empty
         
-        return (M - 1) / (comb(M, s) * s * (M - s))
+        return (Z - 1) / (comb(Z, s) * s * (Z - s))
     
     def _mask_to_set(self, mask: np.ndarray) -> Set[int]:
         """Convert binary mask to set of indices."""
@@ -578,7 +586,7 @@ if __name__ == "__main__":
     np.random.seed(42)
     
     # Create a simple value function
-    M = 6  # Number of modes
+    Z = 6  # Number of modes
     
     # True Shapley values (for ground truth comparison)
     true_importance = np.array([0.4, 0.25, 0.15, 0.1, 0.07, 0.03])
@@ -603,14 +611,14 @@ if __name__ == "__main__":
         verbose=True
     )
     mc = MonteCarloShapley(config)
-    result = mc.compute(M, value_function)
+    result = mc.compute(Z, value_function)
     print(f"   Estimated: {result.values}")
     print(f"   Converged: {result.converged}, Iterations: {result.num_iterations}")
     
     # Kernel SHAP
     print("\n2. Kernel SHAP:")
     kshap = KernelSHAP(num_samples=200)
-    kshap_values = kshap.compute(M, value_function)
+    kshap_values = kshap.compute(Z, value_function)
     print(f"   Estimated: {kshap_values}")
     
     # Compute errors

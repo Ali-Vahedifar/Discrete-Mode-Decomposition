@@ -5,7 +5,7 @@ Mode Valuation Utilities
 Utilities for analyzing and ranking modes based on their contribution
 to prediction performance.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -53,7 +53,7 @@ class ModeValuation:
     This class provides methods for analyzing the importance of modes
     beyond Shapley values, using signal processing metrics.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -190,7 +190,7 @@ class ModeRanker:
     """
     Rank modes based on various criteria.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -229,7 +229,7 @@ class ModeSelector:
     """
     Select optimal subset of modes for prediction.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

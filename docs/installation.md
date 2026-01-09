@@ -2,7 +2,7 @@
 
 ## DMD+SMV: Discrete Mode Decomposition Meets Shapley Value
 
-**Author:** Ali Vahedi (Mohammad Ali Vahedifar)  
+**Author:** Ali Vahedi  
 **Affiliation:** DIGIT and Department of ECE, Aarhus University, Denmark  
 **Email:** av@ece.au.dk  
 **IEEE INFOCOM 2025**

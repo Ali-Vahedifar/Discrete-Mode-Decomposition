@@ -5,7 +5,7 @@ Trainer Class for Signal Prediction Models
 Implementation of the training loop for neural network models,
 following the training procedure described in the IEEE INFOCOM 2025 paper.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -51,7 +51,7 @@ class TrainingConfig:
     
     Default values match the paper's experimental setup exactly.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Attributes:
@@ -138,7 +138,7 @@ class TrainingResult:
     
     Stores all metrics and training history for analysis.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Attributes:
@@ -231,7 +231,7 @@ class Trainer:
     - Multi-run averaging (10 runs as per paper)
     - Mixed precision training
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     
@@ -267,7 +267,7 @@ class Trainer:
         callbacks : List, optional
             List of callback objects for custom behavior
             
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         self.config = config or TrainingConfig()
         self.callbacks = callbacks or []
@@ -317,7 +317,7 @@ class Trainer:
         - β1 = 0.9, β2 = 0.999
         - Initial learning rate = 0.001
         
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         params = self.model.parameters()
         
@@ -353,7 +353,7 @@ class Trainer:
         Implements paper's schedule:
         - Decay by factor of 0.005 at epochs 80, 120, 170
         
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         def lr_lambda(epoch):
             """Compute learning rate multiplier based on epoch."""
@@ -371,7 +371,7 @@ class Trainer:
         
         Default is MSE loss for signal prediction.
         
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         loss_map = {
             'mse': nn.MSELoss(),
@@ -416,7 +416,7 @@ class Trainer:
         TrainingResult
             Training results including losses and metrics
             
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         IEEE INFOCOM 2025
         """
         # Set seed for reproducibility
@@ -523,7 +523,7 @@ class Trainer:
         Tuple[float, float, float]
             (loss, error_percentage, accuracy)
             
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         self.model.train()
         
@@ -618,7 +618,7 @@ class Trainer:
         Tuple[float, float, float]
             (loss, error_percentage, accuracy)
             
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         self.model.eval()
         
@@ -683,7 +683,7 @@ class Trainer:
         Tuple[float, float]
             (error_percentage, accuracy_percentage)
             
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         # Mean Absolute Error
         mae = torch.mean(torch.abs(predictions - targets))
@@ -714,7 +714,7 @@ class Trainer:
         - Training state
         - Configuration
         
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         checkpoint_path = Path(self.config.checkpoint_dir) / filename
         
@@ -739,7 +739,7 @@ class Trainer:
         """
         Load model checkpoint.
         
-        Author: Ali Vahedi (Mohammad Ali Vahedifar)
+        Author: Ali Vahedi
         """
         checkpoint = torch.load(checkpoint_path, map_location=self.device)
         
@@ -819,7 +819,7 @@ def train_multiple_runs(
     Dict[str, Any]
         Aggregated results across all runs
         
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     config = training_config or TrainingConfig()

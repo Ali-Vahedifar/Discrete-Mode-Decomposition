@@ -5,7 +5,7 @@ Download Dataset Script
 
 Downloads the Kinaesthetic Interactions Dataset from Zenodo.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -68,7 +68,7 @@ def main():
     
     print("=" * 60)
     print("Kinaesthetic Interactions Dataset Downloader")
-    print("Author: Ali Vahedi (Mohammad Ali Vahedifar)")
+    print("Author: Ali Vahedi")
     print("IEEE INFOCOM 2025")
     print("=" * 60)
     print(f"\nDataset DOI: {DATASET_DOI}")

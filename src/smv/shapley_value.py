@@ -2,34 +2,37 @@
 Shapley Mode Value (SMV) Implementation
 =======================================
 
+Author: Ali Vahedi
+Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
+IEEE INFOCOM 2025
+This research was supported by:
+- TOAST project (EU Horizon Europe, Grant No. 101073465)
+- Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
+
 Implementation of the Shapley Mode Value algorithm for quantifying
 the contribution of each mode to the prediction task.
-
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
-Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-Email: av@ece.au.dk
-
-IEEE INFOCOM 2025
 
 Mathematical Background:
 -----------------------
 The Shapley value provides a fair attribution of contributions in cooperative
 game theory. For mode valuation, we define:
 
-Let D = {(u_i, ω_i)}_{i=1}^M be the training set containing modes and their
+Let D = {(m_k, ω_k)}_{k=1}^Z be the training set containing modes and their
 center frequencies. Let Z denote the DMD algorithm, and S ⊆ D.
 
-The Shapley Mode Value X_i satisfies:
-1. Transferability: Σ_{i∈D} X_i = V(D) (sum of values equals total utility)
+The Shapley Mode Value X_k satisfies:
+1. Transferability: Σ_{k∈D} X_k = V(D) (sum of values equals total utility)
 2. Monotonicity: Combines null contribution, symmetry, and linearity axioms
 
-The unique solution is (Eq. 33):
-    X_i = Σ_{S⊆D\{i}} [|S|!(|D|-|S|-1)!/|D|!] * [V(S∪{i}) - V(S)]
+The unique solution is (Eq. 23):
+    X_k = Σ_{S⊆D\{k}} [|S|!(|D|-|S|-1)!/|D|!] * [V(S∪{k}) - V(S)]
 
-Convergence criterion (Eq. 36): Average change in Shapley values over 100
+Convergence criterion (Eq. 24): Average change in Shapley values over 100
 iterations is less than 1%.
+    (1/Z)Σ_{k=1}^Z |X_k^t - X_k^{t-100}|/|X_k^t| < 0.01
 
-Algorithm returns: top K modes {X_i}_{i=1}^K, where K ≤ M
+Algorithm 2 returns: top K modes {m_l^{X_l}}_{l=1}^K, where K ≤ Z
 """
 
 import numpy as np
@@ -48,7 +51,7 @@ class ShapleyConfig:
     Attributes:
         tolerance: Convergence tolerance for Monte Carlo approximation
         max_iterations: Maximum number of Monte Carlo iterations
-        performance_tolerance: Threshold for early stopping (Eq. 36)
+        performance_tolerance: Threshold for early stopping (Eq. 24)
         bootstrap_samples: Number of bootstrap samples for variance estimation
         use_antithetic: Use antithetic sampling for variance reduction
         seed: Random seed for reproducibility
@@ -93,7 +96,8 @@ class ShapleyModeValue:
     1. Accelerating inference by retaining only task-relevant modes
     2. Enhancing accuracy by prioritizing meaningful signal modes
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     
     The implementation follows Algorithm 2 from the paper, using Monte Carlo
@@ -215,10 +219,10 @@ class ShapleyModeValue:
         y_val: np.ndarray
     ) -> Tuple[np.ndarray, bool]:
         """
-        Compute exact Shapley values (for small M).
+        Compute exact Shapley values (for small Z).
         
-        Implements Equation 34:
-            X_i = Σ_{S⊆D\{i}} [|S|!(|D|-|S|-1)!/|D|!] * [V(S∪{i}) - V(S)]
+        Implements Equation (23):
+            X_k = Σ_{S⊆D\{k}} [|S|!(|D|-|S|-1)!/|D|!] * [V(S∪{k}) - V(S)]
         
         Parameters:
         -----------
@@ -498,7 +502,8 @@ class ShapleyModeValueFast:
     This is a faster alternative for scenarios where the predictor is
     differentiable and we can use gradient information.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     """
     

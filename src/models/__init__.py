@@ -4,7 +4,7 @@ Neural Network Models Module
 
 Implementation of neural network architectures for haptic signal prediction.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 

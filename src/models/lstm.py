@@ -4,7 +4,7 @@ LSTM Model for Signal Prediction
 
 Implementation of LSTM architecture for haptic signal prediction.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -33,7 +33,7 @@ class LSTMPredictor(BasePredictor):
     - Dense output layer with linear activation
     - Dropout rate: P-drop = 0.2
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

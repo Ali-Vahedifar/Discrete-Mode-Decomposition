@@ -3,7 +3,7 @@
 """
 Setup script for DMD+SMV Tactile Internet package.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 IEEE INFOCOM 2025
 
@@ -32,7 +32,7 @@ with open("requirements.txt", "r") as f:
 setup(
     name="dmd-smv-tactile-internet",
     version="1.0.0",
-    author="Ali Vahedi (Mohammad Ali Vahedifar)",
+    author="Ali Vahedi",
     author_email="av@ece.au.dk",
     description="Discrete Mode Decomposition meets Shapley Value for Robust Signal Prediction in Tactile Internet",
     long_description=long_description,

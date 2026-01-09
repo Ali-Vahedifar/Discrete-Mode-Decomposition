@@ -1,18 +1,44 @@
 """
-ADMM Optimization for Discrete Mode Decomposition
+ADMM Optimization for Discrete Mode Decomposition - EXACT Paper Implementation
 ===============================================================================
 
-
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-Email: av@ece.au.dk
-
+IEEE INFOCOM 2025
 This research was supported by:
 - TOAST project (EU Horizon Europe, Grant No. 101073465)
 - Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
 - NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
 
+EXACT implementation of the ADMM algorithm as described in:
+"Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction
+in Tactile Internet"
+
+Mathematical Background (from paper):
 -------------------------------------
+The DMD optimization problem (Eq. 17):
+    min_{m_Z, ω_Z} T1 + T2 + T3
+    s.t. x[n] = Σ_{k=1}^{Z} m_k[n] + x_u[n]       (Reconstruction)
+         ||x_u[n]||²₂ ≤ ||m_min[n]||²₂             (Energy bound)
+
+The Augmented Lagrangian (Eq. 18):
+    L_aug(μ,ρ) = ||∂_n[A_n * m_Z] e^{-jω_Z n}||²₂ + Σ||β_k * m_Z||²₂
+                 + ||β_Z * x_u||²₂ + (ρ/2)||x - Σm_k - x_u + θ||²₂
+                 + μ(||x_u||²₂ - ||m_min||²₂) - (ρ/2)||θ||²₂
+
+Frequency Domain Lagrangian:
+    L_aug(μ,ρ(ω)) = (2/π)∫₀^π sin²(ω-ω_Z)|M_Z(ω)|² dω
+                    + Σ∫₀^π |β_k(ω)M_Z(ω)|² dω
+                    + ∫₀^π |β_Z(ω)X_u(ω)|² dω
+                    + (ρ(ω)/2)||X - ΣM_k - X_u + Θ||²₂
+                    + μ(||X_u||²₂ - ||M_min||²₂) - (ρ(ω)/2)||Θ||²₂
+
+ADMM Update Equations:
+    Eq. (15): M_Z update
+    Eq. (18): ω_Z update
+    Eq. (20): X_u update (with 2μ term)
+    Eq. (21): Θ update (scaled dual variable with τ₁)
+    Eq. (22): μ update (with max(0,...) and τ₂ for inequality constraint)
 """
 
 import numpy as np
@@ -39,11 +65,12 @@ class ADMMOptimizer:
     """
     ADMM Optimizer for DMD - Exact Paper Implementation.
     
-    Implements the update equations from the IEEE INFOCOM 2025 paper:
-    - Eq. 31: ρ update (equality constraint)
-    - Eq. 32: μ update (inequality constraint with energy-based bound)
+    Implements the update equations from the paper:
+    - Eq. (21): Θ update (scaled dual variable)
+    - Eq. (22): μ update (inequality constraint with energy-based bound)
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     """
     
@@ -60,9 +87,9 @@ class ADMMOptimizer:
         Parameters:
         -----------
         tau1 : float
-            τ₁: Step size for ρ update (Eq. 31)
+            τ₁: Step size for Θ update (Eq. 21)
         tau2 : float
-            τ₂: Step size for μ update (Eq. 32)
+            τ₂: Step size for μ update (Eq. 22)
         rho_init : float
             Initial ρ value
         mu_init : float
@@ -111,28 +138,27 @@ class ADMMOptimizer:
     def update_rho(
         self,
         X: np.ndarray,
-        sum_U: np.ndarray
+        sum_M: np.ndarray
     ) -> np.ndarray:
         """
-        Update equality constraint multiplier ρ(ω).
+        Update penalty parameter ρ(ω).
         
-        Implements Equation 31 from the paper:
-        ρ^{n+1}(ω) = ρ^n(ω) + τ₁ · (X(ω) - Σ_{i=1}^M U_i^{n+1}(ω))
+        Standard ADMM penalty update for primal residual minimization.
         
         Parameters:
         -----------
         X : np.ndarray
             Signal spectrum X(ω)
-        sum_U : np.ndarray
-            Sum of all mode spectra Σ U_i(ω)
+        sum_M : np.ndarray
+            Sum of all mode spectra Σ M_k(ω)
             
         Returns:
         --------
         np.ndarray
             Updated ρ(ω)
         """
-        # Eq. 31: ρ^{n+1}(ω) = ρ^n(ω) + τ₁ · (X(ω) - Σ U_i(ω))
-        self._state.rho = self._state.rho + self.tau1 * np.abs(X - sum_U)
+        # Update ρ based on primal residual
+        self._state.rho = self._state.rho + self.tau1 * np.abs(X - sum_M)
         return self._state.rho
     
     def update_mu(
@@ -144,8 +170,8 @@ class ADMMOptimizer:
         """
         Update inequality constraint multiplier μ.
         
-        Implements Equation 32 from the paper:
-        μ^{n+1} = max(0, μ^n + τ₂ · ∫₀^π (||X_u(ω)||²₂ - ||U_min(ω)||²₂) dω)
+        Implements Equation (22) from the paper:
+        μ^{n+1} = max(0, μ^n + τ₂ · ∫₀^π (||X_u(ω)||²₂ - ||M_min(ω)||²₂) dω)
         
         Parameters:
         -----------
@@ -168,38 +194,38 @@ class ADMMOptimizer:
         # Energy of X_u over [0, π]
         X_u_energy = np.sum(np.abs(X_u[:N_half]) ** 2) * d_omega
         
-        # Find U_min = argmin_{u ∈ U} ||u||₂
+        # Find M_min = argmin_{m ∈ M} ||m||₂
         if modes:
             mode_energies = []
             for mode in modes:
-                U_i = fft(mode)
-                mode_energies.append(np.sum(np.abs(U_i[:N_half]) ** 2) * d_omega)
-            U_min_energy = min(mode_energies)
+                M_k = fft(mode)
+                mode_energies.append(np.sum(np.abs(M_k[:N_half]) ** 2) * d_omega)
+            M_min_energy = min(mode_energies)
         else:
-            U_min_energy = X_u_energy  # Fallback
+            M_min_energy = X_u_energy  # Fallback
         
-        # Eq. 32: μ^{n+1} = max(0, μ^n + τ₂ · ∫(||X_u||² - ||U_min||²) dω)
-        self._state.mu = max(0, self._state.mu + self.tau2 * (X_u_energy - U_min_energy))
+        # Eq. (22): μ^{n+1} = max(0, μ^n + τ₂ · ∫(||X_u||² - ||M_min||²) dω)
+        self._state.mu = max(0, self._state.mu + self.tau2 * (X_u_energy - M_min_energy))
         
         return self._state.mu
     
     def update_Theta(
         self,
         X: np.ndarray,
-        sum_U: np.ndarray,
+        sum_M: np.ndarray,
         X_u: np.ndarray
     ) -> np.ndarray:
         """
         Update scaled dual variable Θ(ω).
         
-        Standard ADMM dual update:
-        Θ^{n+1}(ω) = Θ^n(ω) + (X(ω) - Σ U_i(ω) - X_u(ω))
+        Implements Equation (21) from the paper:
+        Θ^{n+1}(ω) = Θ^n(ω) + τ₁(X(ω) - Σ_{k=1}^Z M_k(ω) - X_u(ω))
         
         Parameters:
         -----------
         X : np.ndarray
             Signal spectrum
-        sum_U : np.ndarray
+        sum_M : np.ndarray
             Sum of all mode spectra
         X_u : np.ndarray
             Unprocessed signal spectrum
@@ -209,14 +235,15 @@ class ADMMOptimizer:
         np.ndarray
             Updated Θ(ω)
         """
-        self._state.Theta = self._state.Theta + (X - sum_U - X_u)
+        # Eq. (21): Θ^{n+1}(ω) = Θ^n(ω) + τ₁(X(ω) - Σ M_k(ω) - X_u(ω))
+        self._state.Theta = self._state.Theta + self.tau1 * (X - sum_M - X_u)
         return self._state.Theta
     
     def step(
         self,
         signal: np.ndarray,
         modes: List[np.ndarray],
-        U_M: np.ndarray,
+        M_Z: np.ndarray,
         X_u: np.ndarray
     ):
         """
@@ -228,8 +255,8 @@ class ADMMOptimizer:
             Original signal x[n]
         modes : List[np.ndarray]
             Previously extracted modes
-        U_M : np.ndarray
-            Current mode spectrum U_M(ω)
+        M_Z : np.ndarray
+            Current mode spectrum M_Z(ω)
         X_u : np.ndarray
             Unprocessed signal spectrum X_u(ω)
         """
@@ -241,16 +268,16 @@ class ADMMOptimizer:
         # Compute required spectra
         X = fft(signal)
         
-        sum_prev_U = np.zeros(N, dtype=complex)
+        sum_prev_M = np.zeros(N, dtype=complex)
         for mode in modes:
-            sum_prev_U += fft(mode)
+            sum_prev_M += fft(mode)
         
-        sum_all_U = sum_prev_U + U_M
+        sum_all_M = sum_prev_M + M_Z
         
-        # Update multipliers (Eq. 31, 32)
-        self.update_rho(X, sum_all_U)
-        self.update_mu(X_u, modes + [np.real(ifft(U_M))], N)
-        self.update_Theta(X, sum_all_U, X_u)
+        # Update multipliers (Eq. 21, 22)
+        self.update_rho(X, sum_all_M)
+        self.update_mu(X_u, modes + [np.real(ifft(M_Z))], N)
+        self.update_Theta(X, sum_all_M, X_u)
         
         # Increment iteration
         self._state.iteration += 1
@@ -260,26 +287,25 @@ class ADMMOptimizer:
             'iteration': self._state.iteration,
             'rho_mean': np.mean(self._state.rho),
             'mu': self._state.mu,
-            'primal_residual': np.linalg.norm(X - sum_all_U - X_u)
+            'primal_residual': np.linalg.norm(X - sum_all_M - X_u)
         })
     
     def get_Q(
         self,
         X: np.ndarray,
-        sum_prev_U: np.ndarray,
+        sum_prev_M: np.ndarray,
         X_u: np.ndarray
     ) -> np.ndarray:
         """
-        Compute auxiliary variable Q(ω) for U_M update.
+        Compute auxiliary variable Q(ω) for M_Z update.
         
-        Equation 22:
-        Q(ω) = X(ω) - Σ_{i=1}^{M-1} U_i(ω) - X_u(ω) + Θ(ω)
+        Q(ω) = X(ω) - Σ_{k=1}^{Z-1} M_k(ω) - X_u(ω) + Θ(ω)
         
         Parameters:
         -----------
         X : np.ndarray
             Signal spectrum
-        sum_prev_U : np.ndarray
+        sum_prev_M : np.ndarray
             Sum of previous mode spectra
         X_u : np.ndarray
             Unprocessed signal spectrum
@@ -289,24 +315,24 @@ class ADMMOptimizer:
         np.ndarray
             Q(ω)
         """
-        return X - sum_prev_U - X_u + self._state.Theta
+        return X - sum_prev_M - X_u + self._state.Theta
     
     def get_Q_tilde(
         self,
         X: np.ndarray,
-        sum_all_U: np.ndarray
+        sum_all_M: np.ndarray
     ) -> np.ndarray:
         """
         Compute auxiliary variable Q̃(ω) for X_u update.
         
-        Equation 28:
-        Q̃(ω) = X(ω) - Σ_{i=1}^M U_i(ω) + Θ(ω)
+        Equation (19):
+        Q̃(ω) = X(ω) - Σ_{k=1}^Z M_k(ω) + Θ(ω)
         
         Parameters:
         -----------
         X : np.ndarray
             Signal spectrum
-        sum_all_U : np.ndarray
+        sum_all_M : np.ndarray
             Sum of all mode spectra (including current)
             
         Returns:
@@ -314,7 +340,7 @@ class ADMMOptimizer:
         np.ndarray
             Q̃(ω)
         """
-        return X - sum_all_U + self._state.Theta
+        return X - sum_all_M + self._state.Theta
     
     def get_convergence_metrics(self) -> Dict:
         """
@@ -344,22 +370,22 @@ class ADMMOptimizer:
 
 def compute_beta_i(
     omega: np.ndarray,
-    omega_i: float,
+    omega_k: float,
     alpha: float,
     epsilon1: float = 1e-6
 ) -> np.ndarray:
     """
-    Compute β_i(ω) filter for mode overlap constraint.
+    Compute β_k(ω) filter for mode overlap constraint.
     
-    Equation 12:
-    β_i(ω) = 1 / [α(ω - ω_i)² + ε₁]
+    Equation (12):
+    β_k(ω) = 1 / [α(ω - ω_k)² + ε₁]
     
     Parameters:
     -----------
     omega : np.ndarray
         Frequency axis
-    omega_i : float
-        Center frequency of mode i
+    omega_k : float
+        Center frequency of mode k
     alpha : float
         Noise variance
     epsilon1 : float
@@ -368,28 +394,28 @@ def compute_beta_i(
     Returns:
     --------
     np.ndarray
-        β_i(ω)
+        β_k(ω)
     """
-    return 1.0 / (alpha * (omega - omega_i) ** 2 + epsilon1)
+    return 1.0 / (alpha * (omega - omega_k) ** 2 + epsilon1)
 
 
-def compute_beta_M(
+def compute_beta_Z(
     omega: np.ndarray,
-    omega_M: float,
+    omega_Z: float,
     alpha: float,
     epsilon2: float = 1e-6
 ) -> np.ndarray:
     """
-    Compute β_M(ω) filter for unprocessed signal constraint.
+    Compute β_Z(ω) filter for unprocessed signal constraint.
     
-    Equation 14:
-    β_M(ω) = 1 / [α(ω - ω_M)² + ε₂]
+    Equation (14):
+    β_Z(ω) = 1 / [α(ω - ω_Z)² + ε₂]
     
     Parameters:
     -----------
     omega : np.ndarray
         Frequency axis
-    omega_M : float
+    omega_Z : float
         Center frequency of current mode
     alpha : float
         Noise variance
@@ -399,25 +425,25 @@ def compute_beta_M(
     Returns:
     --------
     np.ndarray
-        β_M(ω)
+        β_Z(ω)
     """
-    return 1.0 / (alpha * (omega - omega_M) ** 2 + epsilon2)
+    return 1.0 / (alpha * (omega - omega_Z) ** 2 + epsilon2)
 
 
 def compute_spectral_compactness_term(
     omega: np.ndarray,
-    omega_M: float
+    omega_Z: float
 ) -> np.ndarray:
     """
-    Compute spectral compactness term for U_M update.
+    Compute spectral compactness term for M_Z update.
     
-    From Equation 24: (2/π) sin²(ω - ω_M)
+    From Equation (15): (2/π) sin²(ω - ω_Z)
     
     Parameters:
     -----------
     omega : np.ndarray
         Frequency axis
-    omega_M : float
+    omega_Z : float
         Center frequency
         
     Returns:
@@ -425,7 +451,7 @@ def compute_spectral_compactness_term(
     np.ndarray
         Spectral compactness term
     """
-    return (2.0 / np.pi) * np.sin(omega - omega_M) ** 2
+    return (2.0 / np.pi) * np.sin(omega - omega_Z) ** 2
 
 
 # =============================================================================
@@ -448,7 +474,7 @@ if __name__ == "__main__":
     optimizer.reset(N)
     
     # Test mode (dummy)
-    U_M = fft(signal * 0.5)
+    M_Z = fft(signal * 0.5)
     X_u = fft(signal * 0.3)
     modes = [signal * 0.2]
     
@@ -457,7 +483,7 @@ if __name__ == "__main__":
     
     # Run a few iterations
     for i in range(10):
-        optimizer.step(signal, modes, U_M, X_u)
+        optimizer.step(signal, modes, M_Z, X_u)
     
     metrics = optimizer.get_convergence_metrics()
     print(f"\nAfter 10 iterations:")
@@ -466,16 +492,16 @@ if __name__ == "__main__":
     
     # Test filter functions
     omega = 2 * np.pi * np.arange(N) / N
-    omega_M = np.pi / 4
+    omega_Z = np.pi / 4
     alpha = 0.01
     
-    beta_i = compute_beta_i(omega, omega_M, alpha)
-    beta_M = compute_beta_M(omega, omega_M, alpha)
-    sin_sq = compute_spectral_compactness_term(omega, omega_M)
+    beta_k = compute_beta_i(omega, omega_Z, alpha)
+    beta_Z = compute_beta_Z(omega, omega_Z, alpha)
+    sin_sq = compute_spectral_compactness_term(omega, omega_Z)
     
-    print(f"\nFilter tests at ω_M = {omega_M:.4f}:")
-    print(f"  β_i(ω_M): {beta_i[int(omega_M * N / (2 * np.pi))]:.4f}")
-    print(f"  β_M(ω_M): {beta_M[int(omega_M * N / (2 * np.pi))]:.4f}")
-    print(f"  sin²(0) at ω_M: {sin_sq[int(omega_M * N / (2 * np.pi))]:.4f}")
+    print(f"\nFilter tests at ω_Z = {omega_Z:.4f}:")
+    print(f"  β_k(ω_Z): {beta_k[int(omega_Z * N / (2 * np.pi))]:.4f}")
+    print(f"  β_Z(ω_Z): {beta_Z[int(omega_Z * N / (2 * np.pi))]:.4f}")
+    print(f"  sin²(0) at ω_Z: {sin_sq[int(omega_Z * N / (2 * np.pi))]:.4f}")
     
     print("\n✓ All ADMM optimizer tests passed!")

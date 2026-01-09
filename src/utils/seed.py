@@ -2,7 +2,7 @@
 Reproducibility Utilities
 =========================
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -20,7 +20,7 @@ def set_seed(seed: int = 42):
     Used to ensure reproducible results as per the paper's
     methodology of averaging over 10 independent runs.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     random.seed(seed)
@@ -38,7 +38,7 @@ def seed_worker(worker_id: int):
     """
     Seed function for DataLoader workers.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     """
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)

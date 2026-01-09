@@ -5,7 +5,7 @@ Data Preprocessing Utilities for Haptic Signals
 Comprehensive preprocessing pipeline for haptic signal data,
 including normalization, filtering, augmentation, and feature extraction.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -55,7 +55,7 @@ class DataPreprocessor:
     Handles all preprocessing steps for haptic signal data,
     including normalization, filtering, and augmentation.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:

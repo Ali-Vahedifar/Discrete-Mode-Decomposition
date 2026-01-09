@@ -3,7 +3,7 @@
 Train All Models - Main Experiment Script
 ==========================================
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -71,7 +71,7 @@ def main():
     
     print("=" * 60)
     print("DMD+SMV Training Script")
-    print("Author: Ali Vahedi (Mohammad Ali Vahedifar)")
+    print("Author: Ali Vahedi")
     print("IEEE INFOCOM 2025")
     print("=" * 60)
     

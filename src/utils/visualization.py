@@ -4,7 +4,7 @@ Visualization Utilities
 
 Plotting functions for reproducing figures from the IEEE INFOCOM 2025 paper.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -42,7 +42,7 @@ def plot_training_curves(
     """
     Plot training curves similar to Figure 2 in the paper.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     fig, ax1 = plt.subplots(figsize=(10, 6))
@@ -89,7 +89,7 @@ def plot_accuracy_comparison(
     """
     Plot accuracy comparison across methods (Figure 3 style).
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
@@ -144,7 +144,7 @@ def plot_psnr_comparison(
     """
     Plot PSNR comparison (Figure 4 style).
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -183,7 +183,7 @@ def plot_sliding_window_accuracy(
     """
     Plot accuracy over sliding windows (Figure 5 style).
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     fig, ax = plt.subplots(figsize=(10, 6))

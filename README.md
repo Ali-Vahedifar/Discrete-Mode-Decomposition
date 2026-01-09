@@ -3,36 +3,35 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
-[![IEEE INFOCOM 2026](https://img.shields.io/badge/IEEE-INFOCOM%202026-green.svg)](https://infocom2026.ieee-infocom.org/)
+[![IEEE INFOCOM 2025](https://img.shields.io/badge/IEEE-INFOCOM%202025-green.svg)](https://infocom2025.ieee-infocom.org/)
 
-## 🏆 Accepted at IEEE INFOCOM 2026
+## 🏆 Accepted at IEEE INFOCOM 2025
 
-**Authors:** Ali Vahedi and Qi Zhang
+**Authors:** Mohammad Ali Vahedifar (Ali Vahedi) and Qi Zhang
 
 **Affiliation:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
 
 **Acknowledgments:** This research was supported by:
 - TOAST project, funded by the European Union's Horizon Europe research and innovation program under the Marie Skłodowska-Curie Actions Doctoral Network (Grant Agreement No. 101073465)
+- Danish Council for Independent Research project eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
 
----## 🔗 Links
-
-- **Paper:** IEEE INFOCOM 2026 Proceedings
-- **Code:** [github.com/Ali-Vahedifar/Discrete-Mode-Decomposition](https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git)
-- **Dataset:** [Kinaesthetic Interactions Dataset (Zenodo)](https://doi.org/10.5281/zenodo.14924062)
-- **Please check the MATLAB Version branch for MATLAB implementation**.
+---
 
 ## 📖 Abstract
 
 The Tactile Internet (TI) requires ultra-low latency and high reliability to ensure stability and transparency in touch-enabled teleoperation. However, variable delays and packet loss present significant challenges to maintaining immersive haptic communication. This work proposes a novel predictive framework that integrates **Discrete Mode Decomposition (DMD)** with **Shapley Mode Value (SMV)** for accurate and timely haptic signal prediction.
 
-
-<img width="492" height="494" alt="Screenshot 2025-12-31 at 22 47 39" src="https://github.com/user-attachments/assets/b2ef6401-d026-4366-becb-004dc03c89de" />
-
 - **DMD** decomposes haptic signals into interpretable intrinsic modes
 - **SMV** evaluates each mode's contribution to prediction accuracy, aligned with goal-oriented semantic communication
 - Combined **DMD+SMV** accelerates inference, enabling efficient communication and smooth teleoperation
 
-
+### Key Results
+| Method | 1-Sample Accuracy | 100-Sample Accuracy | 1-Sample Latency | 100-Sample Latency |
+|--------|-------------------|---------------------|------------------|---------------------|
+| **DMD+SMV (Ours)** | **98.9%** | **92.5%** | **0.056ms** | **2ms** |
+| DMD | 96.9% | 90.0% | 0.05ms | 6.91ms |
+| Baseline | 73.6% | 67.3% | 0.04ms | 1640.76ms |
 
 ---
 
@@ -262,6 +261,15 @@ Our DMD+SMV framework achieves:
 | ResNet-32 | 11.2×10⁷ | 8.6×10⁶ | 10.72×10⁹ | 2×10⁹ |
 | Transformer | 19.3×10⁷ | 14.8×10⁶ | **26.4×10⁹** | **5.19×10⁹** |
 
+---
+
+## 🔗 Links
+
+- **Paper:** IEEE INFOCOM 2025 Proceedings
+- **Code:** [github.com/Ali-Vahedifar/Discrete-Mode-Decomposition](https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git)
+- **Dataset:** [Kinaesthetic Interactions Dataset (Zenodo)](https://doi.org/10.5281/zenodo.14924062)
+
+---
 
 ## 🔧 Configuration
 
@@ -300,11 +308,11 @@ evaluation:
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@inproceedings{vahedifar2026dmd,
+@inproceedings{vahedifar2025dmd,
   title={Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction in Tactile Internet},
   author={Vahedifar, Mohammad Ali and Zhang, Qi},
-  booktitle={IEEE INFOCOM 2026 - IEEE Conference on Computer Communications},
-  year={2026},
+  booktitle={IEEE INFOCOM 2025 - IEEE Conference on Computer Communications},
+  year={2025},
   organization={IEEE}
 }
 ```
@@ -313,7 +321,8 @@ If you use this code in your research, please cite our paper:
 
 ## 📧 Contact
 
-- **Ali Vahedi**: av@ece.au.dk
+- **Mohammad Ali Vahedifar (Ali Vahedi)**: av@ece.au.dk
+- **Qi Zhang**: qz@ece.au.dk
 
 **Institution:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
 
@@ -336,7 +345,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📜 Changelog
 
-### v1.0.0 (2026)
+### v1.0.0 (2025)
 - Initial release
 - Full implementation of DMD and SMV algorithms
 - Support for Transformer, ResNet-32, and LSTM architectures

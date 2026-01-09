@@ -4,7 +4,7 @@ ResNet Model for Signal Prediction
 
 Implementation of ResNet-32 architecture for haptic signal prediction.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -31,7 +31,7 @@ class ResidualBlock1D(nn.Module):
     
     Uses two convolutional layers with a skip connection.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -116,7 +116,7 @@ class BottleneckBlock1D(nn.Module):
     
     Uses 1x1 -> 3x3 -> 1x1 convolution pattern for efficiency.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -182,7 +182,7 @@ class ResNetPredictor(BasePredictor):
     Uses residual connections to preserve and transmit signal features
     across layers, improving ability to model long-term temporal patterns.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Architecture:
@@ -438,7 +438,7 @@ class ResNet1D(nn.Module):
     """
     Flexible ResNet-1D with configurable depth.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

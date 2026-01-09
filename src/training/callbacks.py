@@ -5,7 +5,7 @@ Training Callbacks for Signal Prediction Models
 Implementation of callback classes for monitoring and controlling
 the training process.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -38,7 +38,7 @@ class Callback(ABC):
     - on_batch_begin: Called at the start of each batch
     - on_batch_end: Called at the end of each batch
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -84,7 +84,7 @@ class EarlyStopping(Callback):
     
     Stops training when validation loss stops improving.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:
@@ -183,7 +183,7 @@ class LearningRateScheduler(Callback):
     Implements the paper's learning rate schedule:
     - Decay by factor of 0.005 at epochs 80, 120, 170
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -241,7 +241,7 @@ class ModelCheckpoint(Callback):
     
     Saves model checkpoints during training.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -333,7 +333,7 @@ class ProgressCallback(Callback):
     
     Logs training progress with configurable verbosity.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -426,7 +426,7 @@ class TensorBoardCallback(Callback):
     
     Logs training metrics to TensorBoard for visualization.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Example:
@@ -529,7 +529,7 @@ class GradientMonitor(Callback):
     
     Monitors gradient norms to detect vanishing/exploding gradients.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -587,7 +587,7 @@ class MetricLogger(Callback):
     
     Logs custom metrics during training.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

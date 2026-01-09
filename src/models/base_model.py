@@ -4,7 +4,7 @@ Base Model Class for Signal Prediction
 
 Base class defining the interface for all prediction models.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -56,7 +56,7 @@ class BasePredictor(nn.Module, ABC):
     All predictor models should inherit from this class and implement
     the forward method.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Methods:
@@ -205,7 +205,7 @@ class ModeEncoder(nn.Module):
     Transforms DMD modes into feature representations that can be
     concatenated with signal features.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -294,7 +294,7 @@ class PositionalEncoding(nn.Module):
     
     Adds sinusoidal position information to input embeddings.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

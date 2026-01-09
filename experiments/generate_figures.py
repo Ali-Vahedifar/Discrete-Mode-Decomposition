@@ -11,7 +11,7 @@ Generates all figures from the IEEE INFOCOM 2025 paper:
 - Figure 6: Feature-wise accuracy
 - Figure 7: Mode update ablation
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -47,7 +47,7 @@ def figure2_training_curves(output_dir: Path):
     Shows Human/Robot train/validation error over 200 epochs
     with learning rate decay markers at epochs 80, 120, 170.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     print("Generating Figure 2: Training Curves...")
@@ -99,7 +99,7 @@ def figure3_accuracy_inference(output_dir: Path):
     - DMD+SMV: 98.9% (W=1), 92.5% (W=100)
     - 820x speedup vs baseline
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     print("Generating Figure 3: Accuracy and Inference Time...")
@@ -179,7 +179,7 @@ def figure4_psnr(output_dir: Path):
     - 9-10 dB improvement over baseline (15 dB)
     - 4-5 dB improvement from SMV over standard DMD
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     print("Generating Figure 4: PSNR Comparison...")
@@ -236,7 +236,7 @@ def figure5_sliding_window(output_dir: Path):
     """
     Figure 5: Accuracy changes over sliding windows (W=5).
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     print("Generating Figure 5: Sliding Window Accuracy...")
@@ -284,7 +284,7 @@ def main():
     
     print("=" * 60)
     print("Generating Paper Figures")
-    print("Author: Ali Vahedi (Mohammad Ali Vahedifar)")
+    print("Author: Ali Vahedi")
     print("IEEE INFOCOM 2025")
     print("=" * 60)
     

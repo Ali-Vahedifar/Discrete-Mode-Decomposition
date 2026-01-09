@@ -2,29 +2,31 @@
 Discrete Wiener Filter Implementation
 =====================================
 
+Author: Ali Vahedi
+Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
+IEEE INFOCOM 2025
+This research was supported by:
+- TOAST project (EU Horizon Europe, Grant No. 101073465)
+- Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
+- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
+
 Implementation of the Discrete Wiener Filter for signal denoising as part
 of the DMD algorithm.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
-Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-Email: av@ece.au.dk
-
-IEEE INFOCOM 2026
-
-Mathematical Background:
------------------------
+Mathematical Background (Equations 3-5):
+---------------------------------------
 Consider the observed discrete-time signal y[n], a version of the original
 signal x[n] corrupted by additive zero-mean white Gaussian noise η[n]:
 
-    y[n] = x[n] + η[n],  η[n] ~ N(0, α)
+    y[n] = x[n] + η[n],  η[n] ~ N(0, α)                    (Eq. 3)
 
 The denoising problem is formulated as discrete Tikhonov regularization:
 
-    min_x { ||x[n] - y[n]||_2^2 + α * ||∇x[n]||_2^2 }
+    min_x { ||x[n] - y[n]||²₂ + α||∂_n x[n]||²₂ }         (Eq. 4)
 
-The solution in the discrete Fourier domain is:
+The solution in the discrete Fourier domain is (Eq. 5):
 
-    X[ω] = Y[ω] / (1 + α|ω|²)
+    X(ω) = Y(ω) / (1 + α|ω|²)
 
 where α represents the variance of white noise.
 """
@@ -44,7 +46,8 @@ class DiscreteWienerFilter:
     
     The filter acts as a low-pass filter with a power spectrum prior of 1/|ω|².
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
+    Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
     IEEE INFOCOM 2025
     
     Attributes:
@@ -299,7 +302,7 @@ class AdaptiveWienerFilter(DiscreteWienerFilter):
     
     Estimates noise variance locally using a sliding window approach.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -370,7 +373,7 @@ class BandpassWienerFilter(DiscreteWienerFilter):
     
     Combines Wiener denoising with bandpass filtering around a center frequency.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     

@@ -2,7 +2,7 @@
 Benchmarking Utilities for Signal Prediction
 =============================================
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 IEEE INFOCOM 2025
@@ -43,7 +43,7 @@ class Benchmark:
     
     Reproduces the experiments from the IEEE INFOCOM 2025 paper.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -108,7 +108,7 @@ def run_window_size_benchmark(
     """
     Benchmark model across different window sizes.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     results = {}
@@ -135,7 +135,7 @@ def run_architecture_benchmark(
     """
     Benchmark different architectures.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     results = {}
@@ -169,7 +169,7 @@ def compare_methods(
     - DMD+SMV vs Baseline: 820x speedup (human), 374x (robot)
     - DMD+SMV vs DMD: 3x speedup (human), 2x (robot)
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     comparison = {

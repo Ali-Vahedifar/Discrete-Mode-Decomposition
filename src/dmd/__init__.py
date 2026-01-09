@@ -5,11 +5,11 @@ Discrete Mode Decomposition (DMD) Module
 This module implements the Discrete Mode Decomposition algorithm for decomposing
 discrete-time signals into fundamental intrinsic modes.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2026
+IEEE INFOCOM 2025
 
 Key Components:
 --------------

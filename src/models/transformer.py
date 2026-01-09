@@ -4,7 +4,7 @@ Transformer Model for Signal Prediction
 
 Implementation of Transformer architecture for haptic signal prediction.
 
-Author: Ali Vahedi (Mohammad Ali Vahedifar)
+Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
@@ -33,7 +33,7 @@ class TransformerPredictor(BasePredictor):
     Uses self-attention mechanism to capture feature-mode relationships
     and masked multi-head attention for sequence prediction.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     
     Key features:
@@ -292,7 +292,7 @@ class TransformerEncoderOnly(BasePredictor):
     Uses only the encoder part of the transformer with a projection
     head for prediction. Faster than encoder-decoder architecture.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
@@ -366,7 +366,7 @@ class AttentionLayer(nn.Module):
     """
     Custom attention layer with mode conditioning.
     
-    Author: Ali Vahedi (Mohammad Ali Vahedifar)
+    Author: Ali Vahedi
     IEEE INFOCOM 2025
     """
     
