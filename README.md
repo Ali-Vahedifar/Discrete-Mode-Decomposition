@@ -5,7 +5,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![IEEE INFOCOM 2026](https://img.shields.io/badge/IEEE-INFOCOM%202026-green.svg)](https://infocom2026.ieee-infocom.org/)
 
-## 🏆 Accepted at IEEE INFOCOM 2025
+## 🏆 Accepted at IEEE INFOCOM 2026
 
 **Authors:** Ali Vahedi and Qi Zhang
 
