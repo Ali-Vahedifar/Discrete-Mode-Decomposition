@@ -313,8 +313,8 @@ If you use this code in your research, please cite our paper:
 @inproceedings{vahedifar2025dmd,
   title={Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction in Tactile Internet},
   author={Vahedifar, Mohammad Ali and Zhang, Qi},
-  booktitle={IEEE INFOCOM 2025 - IEEE Conference on Computer Communications},
-  year={2025},
+  booktitle={IEEE INFOCOM 2026 - IEEE Conference on Computer Communications},
+  year={2026},
   organization={IEEE}
 }
 ```
@@ -323,7 +323,7 @@ If you use this code in your research, please cite our paper:
 
 ## 📧 Contact
 
-- **Mohammad Ali Vahedifar (Ali Vahedi)**: av@ece.au.dk
+- **Ali Vahedi**: av@ece.au.dk
 - **Qi Zhang**: qz@ece.au.dk
 
 **Institution:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
@@ -347,7 +347,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📜 Changelog
 
-### v1.0.0 (2025)
+### v1.0.0 (2026)
 - Initial release
 - Full implementation of DMD and SMV algorithms
 - Support for Transformer, ResNet-32, and LSTM architectures
