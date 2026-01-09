@@ -22,6 +22,8 @@
 
 The Tactile Internet (TI) requires ultra-low latency and high reliability to ensure stability and transparency in touch-enabled teleoperation. However, variable delays and packet loss present significant challenges to maintaining immersive haptic communication. This work proposes a novel predictive framework that integrates **Discrete Mode Decomposition (DMD)** with **Shapley Mode Value (SMV)** for accurate and timely haptic signal prediction.
 
+<img width="911" height="1039" alt="Screenshot 2026-01-09 at 14 52 28" src="https://github.com/user-attachments/assets/f423f40d-35ac-4e47-a33a-1c040f1cfb5d" />
+
 - **DMD** decomposes haptic signals into interpretable intrinsic modes
 - **SMV** evaluates each mode's contribution to prediction accuracy, aligned with goal-oriented semantic communication
 - Combined **DMD+SMV** accelerates inference, enabling efficient communication and smooth teleoperation
