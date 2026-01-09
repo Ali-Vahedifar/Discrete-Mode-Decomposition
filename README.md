@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
-[![IEEE INFOCOM 2025](https://img.shields.io/badge/IEEE-INFOCOM%202025-green.svg)](https://infocom2025.ieee-infocom.org/)
+[![IEEE INFOCOM 2026](https://img.shields.io/badge/IEEE-INFOCOM%202026-green.svg)](https://infocom2026.ieee-infocom.org/)
 
 ## 🏆 Accepted at IEEE INFOCOM 2025
 
