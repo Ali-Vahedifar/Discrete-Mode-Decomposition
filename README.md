@@ -324,7 +324,6 @@ If you use this code in your research, please cite our paper:
 ## 📧 Contact
 
 - **Ali Vahedi**: av@ece.au.dk
-- **Qi Zhang**: qz@ece.au.dk
 
 **Institution:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
 
