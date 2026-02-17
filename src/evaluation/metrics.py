@@ -2,7 +2,7 @@
 Evaluation Metrics for Signal Prediction
 =========================================
 
-Implementation of evaluation metrics used in the IEEE INFOCOM 2025 paper:
+Implementation of evaluation metrics used in the IEEE INFOCOM 2026 paper:
 - Accuracy (%)
 - Error (%)
 - PSNR (dB)
@@ -12,7 +12,7 @@ Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025: "Discrete Mode Decomposition Meets Shapley Value:
+IEEE INFOCOM 2026: "Discrete Mode Decomposition Meets Shapley Value:
 Robust Signal Prediction in Tactile Internet"
 
 Paper Results Summary:
