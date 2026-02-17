@@ -1,6 +1,6 @@
 # ============================================================
 # DMD+SMV Tactile Internet - Requirements
-# Author: Ali Vahedi (Mohammad Ali Vahedifar)
+# Author: Ali Vahedi
 # IEEE INFOCOM 2026
 # ============================================================
 
