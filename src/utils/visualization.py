@@ -42,8 +42,6 @@ def plot_training_curves(
     """
     Plot training curves similar to Figure 2 in the paper.
     
-    Author: Ali Vahedi
-    IEEE INFOCOM 2025
     """
     fig, ax1 = plt.subplots(figsize=(10, 6))
     
