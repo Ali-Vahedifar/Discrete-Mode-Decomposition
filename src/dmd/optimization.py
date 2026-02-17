@@ -1,18 +1,15 @@
 """
-ADMM Optimization for Discrete Mode Decomposition - EXACT Paper Implementation
+ADMM Optimization for Discrete Mode Decomposition
 ===============================================================================
 
 Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-IEEE INFOCOM 2025
+IEEE INFOCOM 2026
 This research was supported by:
 - TOAST project (EU Horizon Europe, Grant No. 101073465)
 - Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
 - NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
 
-EXACT implementation of the ADMM algorithm as described in:
-"Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction
-in Tactile Internet"
 
 Mathematical Background (from paper):
 -------------------------------------
