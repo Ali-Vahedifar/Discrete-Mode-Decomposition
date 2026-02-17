@@ -1,7 +1,7 @@
 # ============================================================
 # DMD+SMV Tactile Internet - Requirements
 # Author: Ali Vahedi (Mohammad Ali Vahedifar)
-# IEEE INFOCOM 2025
+# IEEE INFOCOM 2026
 # ============================================================
 
 # Core Scientific Computing
