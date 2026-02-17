@@ -4,14 +4,11 @@ Discrete Wiener Filter Implementation
 
 Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
-IEEE INFOCOM 2025
+IEEE INFOCOM 2026
 This research was supported by:
 - TOAST project (EU Horizon Europe, Grant No. 101073465)
 - Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
 - NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
-
-Implementation of the Discrete Wiener Filter for signal denoising as part
-of the DMD algorithm.
 
 Mathematical Background (Equations 3-5):
 ---------------------------------------
