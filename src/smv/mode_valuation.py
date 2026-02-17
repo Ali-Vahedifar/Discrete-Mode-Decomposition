@@ -9,7 +9,7 @@ Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025
+IEEE INFOCOM 2026
 
 This module provides:
 1. ModeValuation: Analysis of mode importance using various metrics
