@@ -9,8 +9,6 @@ Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025: "Discrete Mode Decomposition Meets Shapley Value:
-Robust Signal Prediction in Tactile Internet"
 """
 
 import torch
@@ -27,7 +25,7 @@ class MSELoss(nn.Module):
     Standard MSE loss used for signal prediction.
     
     Author: Ali Vahedi
-    IEEE INFOCOM 2025
+    IEEE INFOCOM 2026
     """
     
     def __init__(self, reduction: str = 'mean'):
