@@ -1,5 +1,5 @@
 """
-Discrete Mode Decomposition (DMD) Algorithm - EXACT Paper Implementation
+Discrete Mode Decomposition (DMD)
 =========================================================================
 
 Author: Ali Vahedi
@@ -9,10 +9,6 @@ This research was supported by:
 - TOAST project (EU Horizon Europe, Grant No. 101073465)
 - Danish Council for Independent Research eTouch (Grant No. 1127-00339B)
 - NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
-
-EXACT implementation of the DMD algorithm as described in:
-"Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction
-in Tactile Internet"
 
 Key Equations from Paper:
 -------------------------
