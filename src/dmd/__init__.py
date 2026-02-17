@@ -1,5 +1,5 @@
 """
-Discrete Mode Decomposition (DMD) Module
+Discrete Mode Decomposition (DMD)
 ========================================
 
 This module implements the Discrete Mode Decomposition algorithm for decomposing
@@ -9,7 +9,7 @@ Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025
+IEEE INFOCOM 2026
 
 Key Components:
 --------------
