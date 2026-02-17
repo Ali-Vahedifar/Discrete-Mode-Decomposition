@@ -5,7 +5,7 @@ Inference Engine for Signal Prediction
 Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
-IEEE INFOCOM 2025
+IEEE INFOCOM 2026
 """
 
 import torch
