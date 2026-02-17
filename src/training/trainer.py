@@ -3,14 +3,12 @@ Trainer Class for Signal Prediction Models
 ==========================================
 
 Implementation of the training loop for neural network models,
-following the training procedure described in the IEEE INFOCOM 2025 paper.
+following the training procedure described in the IEEE INFOCOM 2026 paper.
 
 Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025: "Discrete Mode Decomposition Meets Shapley Value:
-Robust Signal Prediction in Tactile Internet"
 
 Training Configuration (from paper):
 ------------------------------------
