@@ -8,7 +8,7 @@ Author: Ali Vahedi
 Affiliation: DIGIT and Department of ECE, Aarhus University, Denmark
 Email: av@ece.au.dk
 
-IEEE INFOCOM 2025: "Discrete Mode Decomposition Meets Shapley Value:
+IEEE INFOCOM 2026: "Discrete Mode Decomposition Meets Shapley Value:
 Robust Signal Prediction in Tactile Internet"
 
 Paper Configuration:
