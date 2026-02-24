@@ -265,7 +265,7 @@ Our DMD+SMV framework achieves:
 
 ## 🔗 Links
 
-- **Paper:** IEEE INFOCOM 2025 Proceedings
+- **Paper:** IEEE INFOCOM 2026 Proceedings
 - **Code:** [github.com/Ali-Vahedifar/Discrete-Mode-Decomposition](https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git)
 - **Dataset:** [Kinaesthetic Interactions Dataset (Zenodo)](https://doi.org/10.5281/zenodo.14924062)
 
@@ -308,7 +308,7 @@ evaluation:
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@inproceedings{vahedifar2025dmd,
+@inproceedings{vahedifar2026dmd,
   title={Discrete Mode Decomposition Meets Shapley Value: Robust Signal Prediction in Tactile Internet},
   author={Vahedifar, Mohammad Ali and Zhang, Qi},
   booktitle={IEEE INFOCOM 2026 - IEEE Conference on Computer Communications},
