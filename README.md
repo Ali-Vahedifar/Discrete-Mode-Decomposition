@@ -98,7 +98,6 @@ dmd-smv-tactile-internet/
 │       ├── logger.py           # Logging utilities
 │       ├── visualization.py    # Plotting and visualization
 │       ├── config.py           # Configuration management
-│       └── seed.py             # Reproducibility utilities
 │
 ├── experiments/                 # Experiment scripts
 │   ├── train_all_models.py     # Train all architectures
@@ -210,7 +209,6 @@ python experiments/train_all_models.py \
     --methods baseline dmd dmd_smv \
     --window_sizes 1 5 10 25 50 100 \
     --epochs 200 \
-    --seed 42
 ```
 
 ### Generate Main Results Figure (Figure 3)
