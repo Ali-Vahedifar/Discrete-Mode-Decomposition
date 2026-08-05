@@ -134,76 +134,12 @@ dmd-smv-tactile-internet/
 ```
 ---
 
-## 📈 Results
-
-### Accuracy Comparison (Figure 3)
-
-Our DMD+SMV framework achieves:
-- **98.9%** accuracy for 1-sample prediction (Transformer)
-- **92.5%** accuracy for 100-sample prediction (Transformer)
-- **820× speedup** compared to baseline methods
-
-### PSNR Results (Figure 4)
-
-- **29.5 dB** PSNR at W=1 for human side
-- **27.5 dB** PSNR at W=1 for robot side
-- Consistent **9-10 dB improvement** over baseline across all horizons
-
-### Inference Time (Table I & II)
-
-| Architecture | DMD+SMV | DMD | Baseline |
-|--------------|---------|-----|----------|
-| Transformer | 2.85ms | 7.30ms | 1640ms |
-| ResNet-32 | 4.30ms | 10.45ms | 2059ms |
-| LSTM | 6.00ms | 15.2ms | 2616ms |
-
-### FLOPs and FLOPS Comparison (Table III)
-
-| Architecture | FLOPs (DMD) | FLOPs (DMD+SMV) | FLOPS (DMD) | FLOPS (DMD+SMV) |
-|--------------|-------------|-----------------|-------------|-----------------|
-| LSTM | 3.4×10⁷ | 2.1×10⁶ | 2.24×10⁹ | 0.35×10⁹ |
-| ResNet-32 | 11.2×10⁷ | 8.6×10⁶ | 10.72×10⁹ | 2×10⁹ |
-| Transformer | 19.3×10⁷ | 14.8×10⁶ | **26.4×10⁹** | **5.19×10⁹** |
-
----
-
 ## 🔗 Links
 
 - **Paper:** IEEE INFOCOM 2026 Proceedings
 - **Code:** [github.com/Ali-Vahedifar/Discrete-Mode-Decomposition](https://github.com/Ali-Vahedifar/Discrete-Mode-Decomposition.git)
 - **Dataset:** [Kinaesthetic Interactions Dataset (Zenodo)](https://doi.org/10.5281/zenodo.14924062)
 
----
-
-## 🔧 Configuration
-
-### Default Configuration
-
-```yaml
-# configs/default_config.yaml
-training:
-  epochs: 200
-  batch_size: 64
-  learning_rate: 0.001
-  lr_decay_epochs: [80, 120, 170]
-  lr_decay_factor: 0.005
-  dropout: 0.1
-
-dmd:
-  noise_variance: 0.01
-  epsilon1: 1e-6
-  epsilon2: 1e-6
-  kappa1: 1e-3
-  kappa2: 1e-3
-
-smv:
-  tolerance: 0.01
-  max_iterations: 1000
-
-evaluation:
-  window_sizes: [1, 5, 10, 25, 50, 100]
-  num_runs: 10
-```
 
 ---
 
@@ -221,36 +157,3 @@ If you use this code in your research, please cite our paper:
 }
 ```
 
----
-
-## 📧 Contact
-
-- **Ali Vahedi**: av@ece.au.dk
-
-**Institution:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- [TOAST Doctoral Network](https://toast-dn.eu/) - EU Horizon Europe Program
-- [Danish Council for Independent Research](https://dff.dk/) - eTouch Project
-- [NordForsk](https://www.nordforsk.org/) - Nordic Edge Intelligence Cooperation
-- [Kinaesthetic Interactions Dataset](https://doi.org/10.5281/zenodo.14924062)
-
----
-
-## 📜 Changelog
-
-### v1.0.0 (2026)
-- Initial release
-- Full implementation of DMD and SMV algorithms
-- Support for Transformer, ResNet-32, and LSTM architectures
-- Comprehensive evaluation framework
-- Paper reproduction scripts
