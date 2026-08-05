@@ -5,13 +5,6 @@
 
 **Authors:** Ali Vahedi and Qi Zhang
 
-**Affiliation:** DIGIT and Department of Electrical and Computer Engineering, Aarhus University, Denmark
-
-**Acknowledgments:** This research was supported by:
-- TOAST project, funded by the European Union's Horizon Europe research and innovation program under the Marie Skłodowska-Curie Actions Doctoral Network (Grant Agreement No. 101073465)
-- Danish Council for Independent Research project eTouch (Grant No. 1127-00339B)
-- NordForsk Nordic University Cooperation on Edge Intelligence (Grant No. 168043)
-
 ---
 
 ## 📖 Abstract
